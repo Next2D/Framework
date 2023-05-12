@@ -3,6 +3,7 @@
  * It exists as a parent class of View and as an abstract class.
  *
  * @class
+ * @memberof view
  * @extends {window.next2d.display.MovieClip}
  */
 // @ts-ignore

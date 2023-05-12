@@ -19,6 +19,7 @@ interface Object {
  * Logic class for JSON acquisition
  *
  * @class
+ * @memberof infrastructure.service
  */
 export class JsonService
 {

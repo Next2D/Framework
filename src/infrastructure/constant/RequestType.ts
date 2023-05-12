@@ -3,6 +3,7 @@
  * Request Type Constants
  *
  * @class
+ * @memberof infrastructure.constant
  */
 export class RequestType
 {

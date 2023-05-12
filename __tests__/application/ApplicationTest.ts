@@ -1,7 +1,7 @@
 import { Application } from "../../src/application/Application";
 import { RequestType } from "../../src/infrastructure/constant/RequestType";
 import { ConfigParser } from "../../src/domain/parser/ConfigParser";
-import {ResponseDTO} from "../../src/infrastructure/dto/ResponseDTO";
+import { ResponseDTO } from "../../src/infrastructure/dto/ResponseDTO";
 
 describe("ApplicationTest", () =>
 {
@@ -67,6 +67,7 @@ describe("ApplicationTest", () =>
 
         const response: Map<string, any> = new Map();
         response.clear();
+        expect(response.size).toBe(0);
 
         // @ts-ignore
         next2d.fw.response = response;
@@ -102,9 +103,9 @@ describe("ApplicationTest", () =>
 
         app
             .gotoView()
-            .then(() =>
+            .then((result) =>
             {
-                expect(response.size).toBe(1);
+                expect(result).toBe(undefined);
             });
 
         // @ts-ignore
@@ -176,9 +177,9 @@ describe("ApplicationTest", () =>
 
         app
             .gotoView()
-            .then(() =>
+            .then((result) =>
             {
-                expect(response.size).toBe(1);
+                expect(result).toBe(undefined);
             });
 
         // @ts-ignore

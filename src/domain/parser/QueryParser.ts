@@ -5,10 +5,14 @@ interface Object {
 
 /**
  * @class
+ * @memberof domain.parser
  */
 export class QueryParser
 {
     /**
+     * @description 指定されたQueryStringか、URLのQueryStringをquery mapに登録
+     *              Register the specified QueryString or URL QueryString in the query map
+     *
      * @param  {string} [name=""]
      * @return {object}
      * @method

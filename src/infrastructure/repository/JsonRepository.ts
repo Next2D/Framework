@@ -16,6 +16,7 @@ interface Object {
  * Request and Response management class for JSON acquisition
  *
  * @class
+ * @memberof infrastructure.repository
  */
 export class JsonRepository
 {

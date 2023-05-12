@@ -23,6 +23,7 @@ interface Object {
  * External request class when switching pages
  *
  * @class
+ * @memberof infrastructure.usecase
  */
 export class RequestUseCase
 {
@@ -74,7 +75,7 @@ export class RequestUseCase
      *              Execute requests to the type specified in Routing settings
      *
      * @param  {string} name
-     * @return {Promise<ResponseDTO>[]}
+     * @return {Promise}
      * @method
      * @public
      */

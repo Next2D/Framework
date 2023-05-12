@@ -1,7 +1,5 @@
 import { Loading } from "../../../src/domain/loading/Loading";
 import { ConfigParser } from "../../../src/domain/parser/ConfigParser";
-import * as stream from "stream";
-import * as string_decoder from "string_decoder";
 
 describe("LoadingTest", () =>
 {

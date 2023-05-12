@@ -19,6 +19,7 @@ interface Object {
  * Logic class for JSON acquisition produced by NoCodeTool
  *
  * @class
+ * @memberof infrastructure.service
  */
 export class ContentService
 {

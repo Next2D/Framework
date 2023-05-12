@@ -5,6 +5,7 @@ import { View } from "./View";
  * It exists as a parent class of ViewModel and as an abstract class.
  *
  * @class
+ * @memberof view
  */
 export class ViewModel
 {

@@ -1,5 +1,6 @@
 /**
  * @class
+ * @memberof domain.screen
  */
 export class Capture
 {
@@ -22,17 +23,7 @@ export class Capture
             const root: any = context.root;
 
             // @ts-ignore
-            const { Sprite, Shape, BitmapData } = next2d.display;
-
-            // @ts-ignore
-            const { Matrix } = next2d.geom;
-
-            const ratio: number = window.devicePixelRatio;
-            const bitmapData: any = new BitmapData(
-                root.stage.canvasWidth  * ratio,
-                root.stage.canvasHeight * ratio,
-                true, 0
-            );
+            const { Shape } = next2d.display;
 
             // @ts-ignore
             const config: any = next2d.fw.config;
@@ -64,45 +55,13 @@ export class Capture
                 mask.y = -ty / scaleY;
             }
 
+            root.mouseChildren = false;
             root.addChild(mask);
 
-            const drawMatrix: any = new Matrix(
-                matrix[0], matrix[1],
-                matrix[2], matrix[3],
-                matrix[4], matrix[5]
-            );
-
-            bitmapData.draw(root, drawMatrix, null, null, (canvas: HTMLCanvasElement): void =>
+            setTimeout(() =>
             {
-                bitmapData.canvas = canvas;
-
-                const sprite: any = new Sprite();
-                sprite.x = -matrix[4] / matrix[0];
-                sprite.y = -matrix[5] / matrix[3];
-                sprite.scaleX = 1 / matrix[0];
-                sprite.scaleY = 1 / matrix[3];
-
-                sprite
-                    .addChild(new Shape())
-                    .graphics
-                    .beginBitmapFill(bitmapData)
-                    .drawRect(0, 0, bitmapData.width, bitmapData.height)
-                    .endFill();
-
-                // remove all
-                while (root.numChildren > 0) {
-                    root.removeChild(root.getChildAt(0));
-                }
-
-                root.addChild(sprite);
-
-                if (root._$created) {
-                    root._$created = false;
-                    root._$createWorkerInstance();
-                }
-
-                return resolve();
-            });
+                resolve();
+            }, 350);
         });
     }
 }

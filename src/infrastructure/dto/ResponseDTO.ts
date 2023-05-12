@@ -3,6 +3,7 @@
  * Converts external data to Object (DTO), disposable class with no variability
  *
  * @class
+ * @memberof infrastructure.dto
  */
 export class ResponseDTO
 {

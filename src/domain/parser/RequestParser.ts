@@ -13,11 +13,15 @@ interface Object {
 
 /**
  * @class
+ * @memberof domain.parser
  */
 export class RequestParser
 {
     /**
-     * @description
+     * @description routing.jsonに設定されたrequestsを返却します。
+     *              クラスターの指定があった場合は返却する配列にマージして返却
+     *              Returns requests set in routing.json.
+     *              If a cluster is specified, it is merged into the array to be returned
      *
      * @param  {string} name
      * @return {array}

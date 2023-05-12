@@ -3,6 +3,7 @@
  * Parser class for variable paths set in config file
  *
  * @class
+ * @memberof domain.parser
  */
 export class ConfigParser
 {

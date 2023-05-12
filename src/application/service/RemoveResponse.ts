@@ -14,6 +14,7 @@ interface Object {
 
 /**
  * @class
+ * @memberof application.service
  */
 export class RemoveResponse
 {

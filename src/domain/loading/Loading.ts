@@ -2,6 +2,7 @@ import { ConfigParser } from "../parser/ConfigParser";
 
 /**
  * @class
+ * @memberof domain.loading
  */
 export class Loading
 {

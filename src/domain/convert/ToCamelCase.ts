@@ -1,5 +1,6 @@
 /**
  * @class
+ * @memberof domain.convert
  */
 export class ToCamelCase
 {

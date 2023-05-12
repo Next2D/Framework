@@ -2,10 +2,14 @@ import { ConfigParser } from "../parser/ConfigParser";
 
 /**
  * @class
+ * @memberof domain.callback
  */
 export class Callback
 {
     /**
+     * @description configで指定されたクラスのexecute関数を実行
+     *              Execute function of the class specified in config.
+     *
      * @param  {string|array} [callback=""]
      * @param  {*} [value=null]
      * @return {Promise}

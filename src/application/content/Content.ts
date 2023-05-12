@@ -3,6 +3,7 @@
  *              A class that completes the dynamic generation of animations created by NoCode Tool.
  *
  * @class
+ * @memberof application.content
  * @extends {window.next2d.display.MovieClip}
  */
 // @ts-ignore
