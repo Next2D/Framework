@@ -20,7 +20,8 @@
   },
   "types": "dist",
   "files": [
-    "dist"
+    "dist",
+    "@types"
   ],
   "repository": {
     "type": "git",
