@@ -6,18 +6,14 @@ import { View } from "./view/View";
 import { ViewModel } from "./view/ViewModel";
 import { DefaultLoading } from "./domain/screen/DefaultLoading";
 
-// @ts-ignore
 if (!("fw" in window.next2d)) {
 
-    // @ts-ignore
     window.next2d.fw = {
         "Application":    Application,
         "Content":        Content,
         "DefaultLoading": DefaultLoading,
         "View":           View,
         "ViewModel":      ViewModel,
-        "application":    null,
-        "context":        null,
         "cache":          new Map(),
         "query":          new Map(),
         "response":       new Map(),

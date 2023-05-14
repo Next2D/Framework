@@ -3,24 +3,36 @@ import { View } from "../../src/view/View";
 
 describe("ViewModelTest", () =>
 {
-    test("bind call test", () => {
+    test("bind call test", () =>
+    {
+        const view: View = new View();
         const viewModel: ViewModel = new ViewModel();
-        expect(viewModel.bind(new View())).toBe(undefined);
+
+        viewModel
+            .bind(view)
+            .then((result) =>
+            {
+                expect(result instanceof View).toBe(true);
+            });
+
     });
 
-    test("unbind call test", () => {
+    test("unbind call test", () =>
+    {
         const viewModel: ViewModel = new ViewModel();
         expect(viewModel.unbind(new View())).toBe(undefined);
     });
 
-    test("factory call test", () => {
+    test("factory call test", () =>
+    {
+        const view: View = new View();
         const viewModel: ViewModel = new ViewModel();
 
         viewModel
-            .factory()
-            .then((value) =>
+            .factory(view)
+            .then((result) =>
             {
-                expect(value).toBe(undefined);
+                expect(result instanceof View).toBe(true);
             });
     });
 });

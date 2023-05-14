@@ -146,10 +146,10 @@ export class Context
             return Promise.resolve();
         }
 
-        const ViewModelClass: any = packages.get(viewModelName);
+        const ViewModelClass: typeof ViewModel = packages.get(viewModelName);
         this._$viewModel = new ViewModelClass();
 
-        const ViewClass: any = packages.get(viewName);
+        const ViewClass: typeof View = packages.get(viewName);
         this._$view = new ViewClass();
 
         // @ts-ignore
