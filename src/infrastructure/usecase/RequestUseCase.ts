@@ -4,8 +4,8 @@ import { CustomService } from "../service/CustomService";
 import { JsonService } from "../service/JsonService";
 import { Callback } from "../../domain/callback/Callback";
 import { RequestParser } from "../../domain/parser/RequestParser";
-import { ConfigParser } from "../../domain/parser/ConfigParser";
-import { ResponseDTO } from "../dto/ResponseDTO";
+import { parser } from "../../application/variable/Parser";
+import type { ResponseDTO } from "../dto/ResponseDTO";
 
 interface Object {
     type: string;
@@ -81,9 +81,6 @@ export class RequestUseCase
      */
     execute (name: string): Promise<ResponseDTO>[]
     {
-        // @ts-ignore
-        const parser: ConfigParser = next2d.fw.parser;
-
         const promises: Promise<ResponseDTO>[] = [];
         const requests: Object[] = this._$requestParser.execute(name);
         for (let idx: number = 0; idx < requests.length; ++idx) {

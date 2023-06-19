@@ -1,7 +1,8 @@
 import { JsonService } from "../../../src/infrastructure/service/JsonService";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
-import { ConfigParser } from "../../../src/domain/parser/ConfigParser";
 import { ResponseDTO } from "../../../src/infrastructure/dto/ResponseDTO";
+import { cache } from "../../../src/application/variable/Cache";
+import { packages } from "../../../src/application/variable/Packages";
 
 interface Object {
     type: string;
@@ -19,16 +20,7 @@ describe("JsonService Test", () =>
     test("execute fetch test use cache", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const cache: Map<string, any> = new Map();
         cache.clear();
-
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        const packages: Map<string, any> = new Map();
 
         const TestCallback = function ()
         {
@@ -39,10 +31,8 @@ describe("JsonService Test", () =>
             };
         };
 
+        packages.clear();
         packages.set("TestCallback_Case1", TestCallback);
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const jsonService = new JsonService();
 
@@ -82,16 +72,7 @@ describe("JsonService Test", () =>
     test("execute fetch test no use cache", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const cache: Map<string, any> = new Map();
         cache.clear();
-
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        const packages: Map<string, any> = new Map();
 
         const TestCallback = function ()
         {
@@ -102,10 +83,8 @@ describe("JsonService Test", () =>
             };
         };
 
+        packages.clear();
         packages.set("TestCallback_Case1", TestCallback);
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const jsonService = new JsonService();
 
@@ -143,16 +122,7 @@ describe("JsonService Test", () =>
     test("execute cache test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const cache: Map<string, any> = new Map();
         cache.set("JSONRepository", "success cache json");
-
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        const packages: Map<string, any> = new Map();
 
         const TestCallback = function ()
         {
@@ -163,6 +133,7 @@ describe("JsonService Test", () =>
             };
         };
 
+        packages.clear();
         packages.set("TestCallback_Case2", TestCallback);
 
         const jsonService = new JsonService();

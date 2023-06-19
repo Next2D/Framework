@@ -50,20 +50,6 @@ export class RequestType
     }
 
     /**
-     * @description 画像データを指定
-     *              Specify image data.
-     *
-     * @return  {string}
-     * @default "image"
-     * @const
-     * @static
-     */
-    static get IMAGE (): string
-    {
-        return "image";
-    }
-
-    /**
      * @description JSONのフォーマットを指定
      *              Specify JSON format.
      *

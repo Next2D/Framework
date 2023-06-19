@@ -1,5 +1,9 @@
-import { RequestType } from "../constant/RequestType";
-import { ConfigParser } from "../../domain/parser/ConfigParser";
+import { parser } from "../../application/variable/Parser";
+import { Event } from "@next2d/player/dist/player/next2d/events/Event";
+import { IOErrorEvent } from "@next2d/player/dist/player/next2d/events/IOErrorEvent";
+import { URLRequestHeader } from "@next2d/player/dist/player/next2d/net/URLRequestHeader";
+import { Loader } from "@next2d/player/dist/player/next2d/display/Loader";
+import { URLRequest } from "@next2d/player/dist/player/next2d/net/URLRequest";
 
 interface Object {
     type: string;
@@ -34,21 +38,28 @@ export class ContentRepository
     {
         return new Promise((resolve, reject) =>
         {
-            // @ts-ignore
-            const { URLRequest, URLRequestHeader, URLRequestMethod } = next2d.net;
-            // @ts-ignore
-            const { Loader } = next2d.display;
-            // @ts-ignore
-            const { Event, IOErrorEvent } = next2d.events;
+            const request: URLRequest = new URLRequest(`${parser.execute(object.path)}`);
 
-            // @ts-ignore
-            const parser: ConfigParser = next2d.fw.parser;
-
-            const request: any = new URLRequest(`${parser.execute(object.path)}`);
-
-            request.method = object.method
+            const method = object.method
                 ? parser.execute(object.method).toUpperCase()
-                : URLRequestMethod.GET;
+                : "GET";
+
+            switch (method) {
+
+                case "DELETE":
+                case "GET":
+                case "HEAD":
+                case "OPTIONS":
+                case "POST":
+                case "PUT":
+                    request.method = method;
+                    break;
+
+                default:
+                    request.method = "GET";
+                    break;
+
+            }
 
             if (object.headers) {
                 for (const [name, value] of Object.entries(object.headers)) {
@@ -62,7 +73,7 @@ export class ContentRepository
                 request.data = JSON.stringify(object.body);
             }
 
-            const loader = new Loader();
+            const loader: Loader = new Loader();
             loader
                 .contentLoaderInfo
                 .addEventListener(Event.COMPLETE, (event: any) =>
@@ -74,15 +85,7 @@ export class ContentRepository
                 .contentLoaderInfo
                 .addEventListener(IOErrorEvent.IO_ERROR, reject);
 
-            if (parser.execute(object.type) === RequestType.IMAGE) {
-
-                loader.loadImage(request);
-
-            } else {
-
-                loader.load(request);
-
-            }
+            loader.load(request);
         });
     }
 }

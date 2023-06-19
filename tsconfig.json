@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "declaration": true,
+    "allowJs": true,
     "target": "es6",
     "lib": ["es6", "dom"],
     "module": "esnext",
@@ -12,6 +13,10 @@
     "baseUrl": ".",
     "outDir": "./dist/"
   },
-  "include": ["src/**/*.ts", "src/index.ts", "@types/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/index.ts",
+    "@types/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

@@ -1,4 +1,5 @@
-import { ConfigParser } from "../../domain/parser/ConfigParser";
+import { parser } from "../../application/variable/Parser";
+import { packages } from "../../application/variable/Packages";
 
 interface Object {
     type: string;
@@ -35,12 +36,6 @@ export class CustomRepository
     {
         return new Promise((resolve) =>
         {
-            // @ts-ignore
-            const parser: ConfigParser = next2d.fw.parser;
-
-            // @ts-ignore
-            const packages: Map<string, any> = next2d.fw.packages;
-
             const className: string = parser.execute(object.class);
             if (!packages.has(className)) {
                 return resolve(null);

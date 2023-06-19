@@ -1,0 +1,1 @@
+export const query: Map<string, any> = new Map();

@@ -1,13 +1,16 @@
-import { Context } from "./Context";
-import { ConfigParser } from "../domain/parser/ConfigParser";
 import { QueryParser } from "../domain/parser/QueryParser";
 import { RequestUseCase } from "../infrastructure/usecase/RequestUseCase";
 import { Callback } from "../domain/callback/Callback";
 import { Loading } from "../domain/loading/Loading";
 import { Capture } from "../domain/screen/Capture";
 import { RemoveResponse } from "./service/RemoveResponse";
-import { ResponseDTO } from "../infrastructure/dto/ResponseDTO";
-import { View } from "../view/View";
+import { $setPackages } from "./variable/Packages";
+import { config, $setConfig } from "./variable/Config";
+import { context, $createContext } from "./variable/Context";
+import { response } from "./variable/Response";
+import type { ResponseDTO } from "../infrastructure/dto/ResponseDTO";
+import type { View } from "../view/View";
+import type { ConfigImpl } from "../interface/ConfigImpl";
 
 interface QueryObject {
     name: string;
@@ -31,54 +34,18 @@ export class Application
     private readonly _$removeResponse: RemoveResponse;
     private _$popstate: boolean;
     private _$currentName: string;
+    private readonly _$promises: Promise<void>[];
 
     /**
-     * @param {object} config
-     * @param {array}  packages
      * @constructor
      * @public
      */
-    constructor (config: any, packages: any)
+    constructor (config: ConfigImpl, packages: any[])
     {
-        /**
-         * @type {object}
-         * @static
-         */
-        // @ts-ignore
-        next2d.fw.config = config;
+        $setConfig(config);
+        $setPackages(packages);
 
-        /**
-         * @type {Map}
-         * @static
-         */
-        // @ts-ignore
-        next2d.fw.packages = new Map(packages);
-
-        /**
-         * @type {Application}
-         * @static
-         */
-        // @ts-ignore
-        next2d.fw.application = this;
-
-        /**
-         * @type {Context}
-         * @static
-         */
-        // @ts-ignore
-        next2d.fw.context = new Context(
-            config.stage.width,
-            config.stage.height,
-            config.stage.fps,
-            config.stage.options
-        );
-
-        /**
-         * @type {ConfigParser}
-         * @static
-         */
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
+        this._$promises = [$createContext(config)];
 
         /**
          * @type {QueryParser}
@@ -169,26 +136,32 @@ export class Application
      */
     gotoView (name: string = ""): Promise<void>
     {
-        // @ts-ignore
-        const config: any = next2d.fw.config;
-
-        const promises: Promise<void>[] = [];
-        if (config.loading) {
-            /**
-             * ローディング表示を起動
-             * Launch loading display
-             */
-            this._$loading.start();
-
-            /**
-             * 現時点の描画をBitmapにして処理の負担を減らす
-             * Reduce the processing burden by making the current drawing a Bitmap.
-             */
-            promises.push(this._$capture.execute());
-        }
-
         return Promise
-            .all(promises)
+            .all(this._$promises)
+            .then((): Promise<Awaited<void>[]> =>
+            {
+                // reset
+                if (this._$promises.length) {
+                    this._$promises.length = 0;
+                }
+
+                const promises: Promise<void>[] = [];
+                if (config.loading) {
+                    /**
+                     * ローディング表示を起動
+                     * Launch loading display
+                     */
+                    this._$loading.start();
+
+                    /**
+                     * 現時点の描画をBitmapにして処理の負担を減らす
+                     * Reduce the processing burden by making the current drawing a Bitmap.
+                     */
+                    promises.push(this._$capture.execute());
+                }
+
+                return Promise.all(promises);
+            })
             .then((): Promise<void> =>
             {
                 /**
@@ -241,8 +214,6 @@ export class Application
                  * レスポンス情報をマップに登録
                  * Response information is registered on the map
                  */
-                // @ts-ignore
-                const response: Map<string, any> = next2d.fw.response;
                 for (let idx: number = 0; idx < responses.length; ++idx) {
 
                     const object: ResponseDTO = responses[idx];
@@ -255,28 +226,24 @@ export class Application
 
                 return Promise.resolve();
             })
-            .then((): Promise<View> =>
+            .then((): Promise<View | void> =>
             {
                 /**
                  * ViewとViewModelを起動
                  * Start View and ViewModel
                  */
                 return Promise.resolve(
-                    // @ts-ignore
-                    next2d.fw.context.addChild(this._$currentName)
+                    context.addChild(this._$currentName)
                 );
             })
-            .then((view: View): Promise<Awaited<any>[]> =>
+            .then((view: View | void): Promise<Awaited<any>[]> =>
             {
-                // @ts-ignore
-                const config: any = next2d.fw.config;
-
                 /**
                  * コールバック設定があれば実行
                  * Execute callback settings if any.
                  */
                 const promises: Promise<any>[] = [];
-                if ("gotoView" in config) {
+                if (view && config.gotoView) {
                     promises.push(this._$callback.execute(
                         config.gotoView.callback, view
                     ));

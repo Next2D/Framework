@@ -1,4 +1,7 @@
-import { ConfigParser } from "../parser/ConfigParser";
+import { config } from "../../application/variable/Config";
+import { packages } from "../../application/variable/Packages";
+import { parser } from "../../application/variable/Parser";
+import { DefaultLoading } from "../screen/DefaultLoading";
 
 /**
  * @class
@@ -16,29 +19,20 @@ export class Loading
      */
     start (): void
     {
-        // @ts-ignore
-        const config: any = next2d.fw.config;
-        if (!config.loading) {
+        if (!config || !config.loading) {
             return ;
         }
 
-        const callback: string|void = config.loading.callback;
+        const callback: string | void = config.loading.callback;
         if (!callback) {
             return ;
         }
-
-        // @ts-ignore
-        const packages: Map<string, any> = next2d.fw.packages;
-
-        // @ts-ignore
-        const parser: ConfigParser = next2d.fw.parser;
 
         const name: string = parser.execute(callback);
 
         const CallbackClass: any = packages.has(name)
             ? packages.get(name)
-            // @ts-ignore
-            : next2d.fw.DefaultLoading;
+            : DefaultLoading;
 
         new CallbackClass().start();
     }
@@ -53,9 +47,7 @@ export class Loading
      */
     end (): void
     {
-        // @ts-ignore
-        const config: any = next2d.fw.config;
-        if (!config.loading) {
+        if (!config || !config.loading) {
             return ;
         }
 
@@ -64,18 +56,11 @@ export class Loading
             return ;
         }
 
-        // @ts-ignore
-        const packages: Map<string, any> = next2d.fw.packages;
-
-        // @ts-ignore
-        const parser: ConfigParser = next2d.fw.parser;
-
         const name: string = parser.execute(callback);
 
         const CallbackClass: any = packages.has(name)
             ? packages.get(name)
-            // @ts-ignore
-            : next2d.fw.DefaultLoading;
+            : DefaultLoading;
 
         new CallbackClass().end();
     }

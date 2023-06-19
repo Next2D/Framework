@@ -22,7 +22,7 @@ module.exports = {
         "meta": {
             "title": "Framework API Documentation",
             "description": "Next2D Framework API Documentation.",
-            "keyword": "Next2D, WebGL, WebGL2, JavaScript, HTML5, MVVM"
+            "keyword": "Next2D, WebGL, JavaScript, HTML5, MVVM, DDD, CleanArchitecture"
         },
         "linenums": true,
         "default" : {

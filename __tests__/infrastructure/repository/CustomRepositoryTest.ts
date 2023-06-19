@@ -1,6 +1,6 @@
 import { CustomRepository } from "../../../src/infrastructure/repository/CustomRepository";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
-import { ConfigParser } from "../../../src/domain/parser/ConfigParser";
+import { packages } from "../../../src/application/variable/Packages";
 
 interface Object {
     type: string;
@@ -20,9 +20,6 @@ describe("CustomRepository Test", () =>
     test("execute public test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
         const object: Object = {
             "type": RequestType.CUSTOM,
             "name": "CustomRepository",
@@ -32,8 +29,6 @@ describe("CustomRepository Test", () =>
             "class": "CustomClass"
         };
 
-        const packages: Map<string, any> = new Map();
-
         const CustomClass = class CustomClass
         {
             publicGet ()
@@ -42,10 +37,8 @@ describe("CustomRepository Test", () =>
             }
         };
 
+        packages.clear();
         packages.set("CustomClass", CustomClass);
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const customRepository = new CustomRepository();
         customRepository
@@ -59,8 +52,6 @@ describe("CustomRepository Test", () =>
     test("execute static test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
 
         const object: Object = {
             "type": RequestType.CUSTOM,
@@ -71,8 +62,6 @@ describe("CustomRepository Test", () =>
             "class": "CustomClass"
         };
 
-        const packages: Map<string, any> = new Map();
-
         const CustomClass = class CustomClass
         {
             static staticGet ()
@@ -81,10 +70,8 @@ describe("CustomRepository Test", () =>
             }
         };
 
+        packages.clear();
         packages.set("CustomClass", CustomClass);
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const customRepository = new CustomRepository();
         customRepository
@@ -98,9 +85,6 @@ describe("CustomRepository Test", () =>
     test("execute not found test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
         const object: Object = {
             "type": RequestType.CUSTOM,
             "name": "CustomRepository",
@@ -110,11 +94,7 @@ describe("CustomRepository Test", () =>
             "class": "CustomClass"
         };
 
-        const packages: Map<string, any> = new Map();
         packages.clear();
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const customRepository = new CustomRepository();
         customRepository

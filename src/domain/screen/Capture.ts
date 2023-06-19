@@ -1,3 +1,9 @@
+import { config } from "../../application/variable/Config";
+import { context } from "../../application/variable/Context";
+import { $currentPlayer } from "@next2d/player/dist/player/util/Util";
+import { Shape } from "@next2d/player/dist/player/next2d/display/Shape";
+import type { Sprite } from "@next2d/player/dist/player/next2d/display/Sprite";
+import type { Player } from "@next2d/player/dist/player/player/Player";
 /**
  * @class
  * @memberof domain.screen
@@ -16,18 +22,6 @@ export class Capture
     {
         return new Promise((resolve) =>
         {
-            // @ts-ignore
-            const context: any = next2d.fw.context;
-
-            // @ts-ignore
-            const root: any = context.root;
-
-            // @ts-ignore
-            const { Shape } = next2d.display;
-
-            // @ts-ignore
-            const config: any = next2d.fw.config;
-
             const width: number  = config.stage.width;
             const height: number = config.stage.height;
 
@@ -38,25 +32,27 @@ export class Capture
                 .drawRect(0, 0, width, height)
                 .endFill();
 
-            const player: any = root.stage._$player;
-            const matrix: any = player._$matrix;
+            const player: Player = $currentPlayer();
 
-            const tx: number = matrix[4];
+            const tx: number = player.x;
             if (tx) {
-                const scaleX: number = matrix[0];
+                const scaleX: number = player.scaleX;
                 mask.scaleX = (width + tx * 2 / scaleX) / width;
                 mask.x = -tx / scaleX;
             }
 
-            const ty: number = matrix[5];
+            const ty: number = player.y;
             if (ty) {
-                const scaleY: number = matrix[3];
+                const scaleY: number = player.scaleY;
                 mask.scaleY = (height + ty * 2 / scaleY) / height;
                 mask.y = -ty / scaleY;
             }
 
-            root.mouseChildren = false;
-            root.addChild(mask);
+            const root: Sprite = context.root;
+            if (root) {
+                root.mouseChildren = false;
+                root.addChild(mask);
+            }
 
             setTimeout(() =>
             {

@@ -1,31 +1,30 @@
-"use strict";
-
+import "@next2d/player";
 import { Application } from "./application/Application";
-import { Content } from "./application/content/Content";
+import { DefaultLoading } from "./domain/screen/DefaultLoading";
 import { View } from "./view/View";
 import { ViewModel } from "./view/ViewModel";
-import { DefaultLoading } from "./domain/screen/DefaultLoading";
+import { packages } from "./application/variable/Packages";
+import { context } from "./application/variable/Context";
+import { cache } from "./application/variable/Cache";
+import { query } from "./application/variable/Query";
+import { response } from "./application/variable/Response";
+import { loaderInfoMap } from "./application/variable/LoaderInfoMap";
 
-if (!("fw" in window.next2d)) {
+// output build version
+console.log("%c Next2D Framework %c 1.5.3 %c https://next2d.app",
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #4bc729",
+    "");
 
-    window.next2d.fw = {
-        "Application":    Application,
-        "Content":        Content,
-        "DefaultLoading": DefaultLoading,
-        "View":           View,
-        "ViewModel":      ViewModel,
-        "cache":          new Map(),
-        "query":          new Map(),
-        "response":       new Map(),
-        "loaderInfo":     new Map(),
-        "config":         {}
-    };
-
-    // output build version
-    const packageJson = require("../package.json");
-    console.log(`%c Next2D Framework %c ${packageJson.version} %c https://next2d.app`,
-        "color: #fff; background: #5f5f5f",
-        "color: #fff; background: #4bc729",
-        "");
-
-}
+export {
+    Application,
+    DefaultLoading,
+    View,
+    ViewModel,
+    packages,
+    context,
+    cache,
+    query,
+    response,
+    loaderInfoMap
+};

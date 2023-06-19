@@ -1,3 +1,6 @@
+import "@next2d/player";
+import { Sprite } from "@next2d/player/dist/player/next2d/display/Sprite";
+import { packages } from "../../src/application/variable/Packages";
 import { Context } from "../../src/application/Context";
 import { View } from "../../src/view/View";
 
@@ -6,13 +9,9 @@ describe("ContextTest", () =>
     test("initialize test", () =>
     {
         // mock
-        const packages: Map<string, any> = new Map();
         packages.clear();
 
-        // @ts-ignore
-        next2d.fw.packages = packages;
-
-        const context = new Context();
+        const context = new Context(new Sprite());
         context
             .addChild("test")
             .then((result) =>
@@ -28,13 +27,9 @@ describe("ContextTest", () =>
     test("initialize not view test", () =>
     {
         // mock
-        const packages: Map<string, any> = new Map();
         packages.clear();
 
-        // @ts-ignore
-        next2d.fw.packages = packages;
-
-        const context = new Context();
+        const context = new Context(new Sprite());
         context
             .addChild("abc")
             .then((result) =>
@@ -47,12 +42,10 @@ describe("ContextTest", () =>
 
     test("initialize test case1", () =>
     {
-        // mock
-        const packages: Map<string, any> = new Map();
-
         const view_initialize: string = "view_initialize";
 
         // @ts-ignore
+        packages.clear();
         packages.set("XyzView", class XyzView extends View
         {
             // eslint-disable-next-line no-unreachable
@@ -96,7 +89,7 @@ describe("ContextTest", () =>
         // @ts-ignore
         next2d.fw.packages = packages;
 
-        const context = new Context();
+        const context = new Context(new Sprite());
         context
             .addChild("xyz")
             .then((result) =>

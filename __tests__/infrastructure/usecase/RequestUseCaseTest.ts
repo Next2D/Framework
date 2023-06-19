@@ -1,38 +1,41 @@
+import "@next2d/player";
 import { RequestUseCase } from "../../../src/infrastructure/usecase/RequestUseCase";
-import { ConfigParser } from "../../../src/domain/parser/ConfigParser";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
 import { ResponseDTO } from "../../../src/infrastructure/dto/ResponseDTO";
+import { $setPackages } from "../../../src/application/variable/Packages";
+import { $setConfig } from "../../../src/application/variable/Config";
+import { cache } from "../../../src/application/variable/Cache";
+import { packages } from "../../../src/application/variable/Packages";
 
 describe("RequestUseCase Test", () =>
 {
     test("request test", () =>
     {
-        // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const packages: Map<string, any> = new Map();
-
         const TestRepository = {
             "get": () => {
                 return "success custom";
             }
         };
 
+        packages.clear();
         packages.set("TestRepository", TestRepository);
 
-        // @ts-ignore
-        next2d.fw.packages = packages;
+        $setPackages(Array.from(packages));
 
-        const cache: Map<string, any> = new Map();
+        cache.clear();
         cache.set("JSONRepository", "success json");
         cache.set("ContentRepository", "success content");
 
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        // @ts-ignore
-        next2d.fw.config = {
+        // mock
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
             "routing": {
                 "test": {
                     "requests": [
@@ -57,6 +60,8 @@ describe("RequestUseCase Test", () =>
                 }
             }
         };
+
+        $setConfig(config);
 
         const requestUseCase: RequestUseCase = new RequestUseCase();
         const promises = requestUseCase.execute("test");

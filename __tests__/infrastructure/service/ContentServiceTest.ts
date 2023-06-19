@@ -1,7 +1,10 @@
+import "@next2d/player";
 import { ContentService } from "../../../src/infrastructure/service/ContentService";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
-import { ConfigParser } from "../../../src/domain/parser/ConfigParser";
 import { ResponseDTO } from "../../../src/infrastructure/dto/ResponseDTO";
+import { cache } from "../../../src/application/variable/Cache";
+import { packages } from "../../../src/application/variable/Packages";
+import { loaderInfoMap } from "../../../src/application/variable/LoaderInfoMap";
 
 interface Object {
     type: string;
@@ -19,16 +22,7 @@ describe("ContentService Test", () =>
     test("execute fetch test use cache", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const cache: Map<string, any> = new Map();
         cache.clear();
-
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        const packages: Map<string, any> = new Map();
 
         const TestCallback = function ()
         {
@@ -39,15 +33,10 @@ describe("ContentService Test", () =>
             };
         };
 
+        packages.clear();
         packages.set("TestCallback_Case1", TestCallback);
 
-        // @ts-ignore
-        next2d.fw.packages = packages;
-
-        const loaderInfo: Map<string, any> = new Map();
-
-        // @ts-ignore
-        next2d.fw.loaderInfo = loaderInfo;
+        loaderInfoMap.clear();
 
         const contentService = new ContentService();
 
@@ -60,11 +49,11 @@ describe("ContentService Test", () =>
         };
 
         expect(cache.size).toBe(0);
-        expect(loaderInfo.size).toBe(0);
+        expect(loaderInfoMap.size).toBe(0);
 
         contentService
             .execute(object)
-            .then((response: ResponseDTO|void) =>
+            .then((response: ResponseDTO | void) =>
             {
                 if (!response) {
                     throw new Error("stop test");
@@ -76,24 +65,16 @@ describe("ContentService Test", () =>
                 expect(cache.size).toBe(1);
                 expect(cache.get("ContentRepository").text).toBe("NoCode Tool content");
 
-                expect(loaderInfo.size).toBe(1);
-                expect(loaderInfo.get("app")._$data.symbols.get("app")).toBe("app");
+                expect(loaderInfoMap.size).toBe(1);
+                // @ts-ignore
+                expect(loaderInfoMap.get("app")._$data.symbols.get("app")).toBe("app");
             });
     });
 
     test("execute fetch test no use cache", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const cache: Map<string, any> = new Map();
         cache.clear();
-
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        const packages: Map<string, any> = new Map();
 
         const TestCallback = function ()
         {
@@ -104,15 +85,10 @@ describe("ContentService Test", () =>
             };
         };
 
+        packages.clear();
         packages.set("TestCallback_Case1", TestCallback);
 
-        // @ts-ignore
-        next2d.fw.packages = packages;
-
-        const loaderInfo: Map<string, any> = new Map();
-
-        // @ts-ignore
-        next2d.fw.loaderInfo = loaderInfo;
+        loaderInfoMap.clear();
 
         const contentService = new ContentService();
 
@@ -124,7 +100,7 @@ describe("ContentService Test", () =>
         };
 
         expect(cache.size).toBe(0);
-        expect(loaderInfo.size).toBe(0);
+        expect(loaderInfoMap.size).toBe(0);
 
         contentService
             .execute(object)
@@ -139,24 +115,16 @@ describe("ContentService Test", () =>
 
                 expect(cache.size).toBe(0);
 
-                expect(loaderInfo.size).toBe(1);
-                expect(loaderInfo.get("app")._$data.symbols.get("app")).toBe("app");
+                expect(loaderInfoMap.size).toBe(1);
+                // @ts-ignore
+                expect(loaderInfoMap.get("app")._$data.symbols.get("app")).toBe("app");
             });
     });
 
     test("execute cache test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const cache: Map<string, any> = new Map();
         cache.set("ContentRepository", "success cache content");
-
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        const packages: Map<string, any> = new Map();
 
         const TestCallback = function ()
         {
@@ -167,6 +135,7 @@ describe("ContentService Test", () =>
             };
         };
 
+        packages.clear();
         packages.set("TestCallback_Case2", TestCallback);
 
         const contentService = new ContentService();

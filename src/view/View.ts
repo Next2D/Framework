@@ -1,13 +1,14 @@
+import { MovieClip } from "@next2d/player/dist/player/next2d/display/MovieClip";
+
 /**
  * Viewの親クラス、抽象クラスとして存在しています。
  * It exists as a parent class of View and as an abstract class.
  *
  * @class
  * @memberof view
- * @extends {window.next2d.display.MovieClip}
+ * @extends {MovieClip}
  */
-// @ts-ignore
-export class View extends window.next2d.display.MovieClip
+export class View extends MovieClip
 {
     /**
      * @constructor

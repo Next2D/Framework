@@ -1,13 +1,18 @@
+import "@next2d/player";
 import { Application } from "../../src/application/Application";
 import { RequestType } from "../../src/infrastructure/constant/RequestType";
-import { ConfigParser } from "../../src/domain/parser/ConfigParser";
+import { cache } from "../../src/application/variable/Cache";
+import { response } from "../../src/application/variable/Response";
 import { ResponseDTO } from "../../src/infrastructure/dto/ResponseDTO";
+import { $createContext } from "../../src/application/variable/Context";
 
 describe("ApplicationTest", () =>
 {
     test("initialize test", () => {
 
         const config = {
+            "platform": "web",
+            "spa": true,
             "stage": {
                 "width": 240,
                 "height": 240,
@@ -15,7 +20,12 @@ describe("ApplicationTest", () =>
                 "options": {}
             },
             "routing": {
-                "test": {}
+                "test": {
+                    "requests": [{
+                        "type": "json",
+                        "path": "."
+                    }]
+                }
             }
         };
         const packages = [["app", "app"]];
@@ -28,10 +38,9 @@ describe("ApplicationTest", () =>
     test("loading test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.context = next2d.createRootMovieClip();
-
         const config = {
+            "platform": "web",
+            "spa": true,
             "stage": {
                 "width": 240,
                 "height": 240,
@@ -39,10 +48,17 @@ describe("ApplicationTest", () =>
                 "options": {}
             },
             "routing": {
-                "test": {}
-            },
-            "loading": true
+                "test": {
+                    "requests": [{
+                        "type": "json",
+                        "path": "."
+                    }]
+                }
+            }
         };
+
+        $createContext(config);
+
         const packages = [["app", "app"]];
 
         const app = new Application(config, packages);
@@ -51,28 +67,15 @@ describe("ApplicationTest", () =>
 
     test("spa test", () =>
     {
-        // mock
-
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const cache: Map<string, any> = new Map();
+        cache.clear();
         cache.set("app_test", new ResponseDTO("app_test", "app success"));
 
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        // @ts-ignore
-        next2d.fw.context = next2d.createRootMovieClip();
-
-        const response: Map<string, any> = new Map();
         response.clear();
         expect(response.size).toBe(0);
 
-        // @ts-ignore
-        next2d.fw.response = response;
-
         const config = {
+            "platform": "web",
+            "spa": true,
             "stage": {
                 "width": 240,
                 "height": 240,
@@ -94,8 +97,9 @@ describe("ApplicationTest", () =>
             "gotoView": {
                 "callback": ""
             },
-            "spa": true,
-            "loading": true
+            "loading": {
+                "callback": ""
+            }
         };
         const packages = [["app", "app"]];
 
@@ -120,27 +124,15 @@ describe("ApplicationTest", () =>
     test("spa response zero test", () =>
     {
         // mock
-
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const cache: Map<string, any> = new Map();
+        cache.clear();
         cache.set("app_test", new ResponseDTO());
-        cache.set("", new ResponseDTO());
+        cache.set("abc", new ResponseDTO());
 
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        // @ts-ignore
-        next2d.fw.context = next2d.createRootMovieClip();
-
-        const response: Map<string, any> = new Map();
         response.clear();
 
-        // @ts-ignore
-        next2d.fw.response = response;
-
         const config = {
+            "platform": "web",
+            "spa": true,
             "stage": {
                 "width": 240,
                 "height": 240,
@@ -158,7 +150,7 @@ describe("ApplicationTest", () =>
                         },
                         {
                             "type": RequestType.CONTENT,
-                            "name": "",
+                            "name": "abc",
                             "path": "",
                             "cache": true
                         }
@@ -168,8 +160,9 @@ describe("ApplicationTest", () =>
             "gotoView": {
                 "callback": ""
             },
-            "spa": true,
-            "loading": true
+            "loading": {
+                "callback": ""
+            }
         };
         const packages = [["app", "app"]];
 

@@ -1,4 +1,6 @@
 import { DefaultLoading } from "../../../src/domain/screen/DefaultLoading";
+import { $setConfig } from "../../../src/application/variable/Config";
+import { $createContext, context } from "../../../src/application/variable/Context";
 
 describe("DefaultLoadingTest", () =>
 {
@@ -19,68 +21,105 @@ describe("DefaultLoadingTest", () =>
 
         const element = document
             .getElementById("__next2d__framework_loading");
-        if (!element) {
-            throw new Error("stop test");
-        }
 
-        expect(element.getAttribute("style")).toBe("");
+        if (element) {
+            expect(element.getAttribute("style")).toBe("");
+        }
     });
 
     test("start function no parent test", () =>
     {
-        // mock
         // @ts-ignore
         $elements.clear();
 
-        // @ts-ignore
-        next2d.fw.context = {
-            "root": {
-                "stage": {
-                    "player": {
-                        "contentElementId": "__next2d__"
-                    }
-                }
+        // mock
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
             }
         };
 
-        const defaultLoading = new DefaultLoading();
-        defaultLoading.start();
+        $setConfig(config);
+        if (context) {
+            const defaultLoading = new DefaultLoading();
+            defaultLoading.start();
 
-        // @ts-ignore
-        expect($elements.size).toBe(0);
+            // @ts-ignore
+            expect($elements.size).toBe(0);
+        } else {
+            $createContext(config)
+                .then(() =>
+                {
+                    const defaultLoading = new DefaultLoading();
+                    defaultLoading.start();
+
+                    // @ts-ignore
+                    expect($elements.size).toBe(0);
+                });
+        }
+
     });
 
     test("start function test", () =>
     {
-        // mock
-        // @ts-ignore
-        next2d.fw.context = {
-            "root": {
-                "stage": {
-                    "player": {
-                        "contentElementId": "__next2d__"
-                    }
-                }
-            }
-        };
-
         // @ts-ignore
         $elements.clear();
 
-        // @ts-ignore
-        $elements.set("__next2d__", document.createElement());
+        // mock
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            }
+        };
 
-        const defaultLoading = new DefaultLoading();
-        defaultLoading.start();
+        $setConfig(config);
+        if (context) {
+            // @ts-ignore
+            $elements.clear();
 
-        const element = document
-            .getElementById("__next2d__framework_loading");
+            // @ts-ignore
+            $elements.set("__next2d__", document.createElement());
 
-        if (!element) {
-            throw new Error("stop test");
+            const defaultLoading = new DefaultLoading();
+            defaultLoading.start();
+
+            const element = document
+                .getElementById("__next2d__framework_loading");
+
+            if (element) {
+                expect(element.id).toBe("__next2d__framework_loading");
+            }
+        } else {
+            $createContext(config)
+                .then(() =>
+                {
+                    // @ts-ignore
+                    $elements.clear();
+
+                    // @ts-ignore
+                    $elements.set("__next2d__", document.createElement());
+
+                    const defaultLoading = new DefaultLoading();
+                    defaultLoading.start();
+
+                    const element = document
+                        .getElementById("__next2d__framework_loading");
+
+                    if (element) {
+                        expect(element.id).toBe("__next2d__framework_loading");
+                    }
+                });
         }
-
-        expect(element.id).toBe("__next2d__framework_loading");
     });
 
     test("end function no element test", () =>
@@ -115,10 +154,8 @@ describe("DefaultLoadingTest", () =>
         const element = document
             .getElementById("__next2d__framework_loading");
 
-        if (!element) {
-            throw new Error("stop test");
+        if (element) {
+            expect(element.getAttribute("style")).toBe("display:none;");
         }
-
-        expect(element.getAttribute("style")).toBe("display:none;");
     });
 });

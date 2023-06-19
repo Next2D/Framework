@@ -1,4 +1,4 @@
-import { ConfigParser } from "../../domain/parser/ConfigParser";
+import { parser } from "../../application/variable/Parser";
 
 interface Object {
     type: string;
@@ -31,9 +31,6 @@ export class JsonRepository
      */
     execute (object: Object): Promise<any>
     {
-        // @ts-ignore
-        const parser: ConfigParser = next2d.fw.parser;
-
         const options: RequestInit = {};
 
         const method: string = options.method = object.method

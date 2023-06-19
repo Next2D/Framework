@@ -1,4 +1,5 @@
 import { RequestType } from "../../infrastructure/constant/RequestType";
+import { config } from "../../application/variable/Config";
 
 interface Object {
     type: string;
@@ -8,7 +9,7 @@ interface Object {
     class: string;
     access: string;
     method: string;
-    callback?: string|string[];
+    callback?: string | string[];
 }
 
 /**
@@ -30,8 +31,9 @@ export class RequestParser
      */
     execute (name: string): Object[]
     {
-        // @ts-ignore
-        const config: any = next2d.fw.config;
+        if (!config || !config.routing) {
+            return [];
+        }
 
         const routing: any = config.routing[name];
         if (!routing || !routing.requests) {

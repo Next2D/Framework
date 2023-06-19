@@ -1,40 +1,46 @@
-import { ConfigParser } from "../../../src/domain/parser/ConfigParser";
+import { parser } from "../../../src/application/variable/Parser";
+import { $setConfig } from "../../../src/application/variable/Config";
 
 describe("ConfigParserTest", () =>
 {
     test("parse config test case1", () =>
     {
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
             "stage": {
                 "width": 240,
                 "height": 240,
                 "fps": 12,
                 "options": {}
             },
+            "routing": {},
             "endPoint": "localhost",
             "v1": "version/1"
         };
 
-        const parser = new ConfigParser();
+        $setConfig(config);
+
         expect(parser.execute("{{normal")).toBe("{{normal");
     });
 
     test("parse config test case2", () =>
     {
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
             "stage": {
                 "width": 240,
                 "height": 240,
                 "fps": 12,
                 "options": {}
             },
+            "routing": {},
             "endPoint": "localhost",
             "v1": "version/1"
         };
 
-        const parser = new ConfigParser();
+        $setConfig(config);
 
         expect(parser.execute("{{ endPoint }}/{{ v1 }}/test"))
             .toBe("localhost/version/1/test");
@@ -42,14 +48,16 @@ describe("ConfigParserTest", () =>
 
     test("parse config test case3", () =>
     {
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
             "stage": {
                 "width": 240,
                 "height": 240,
                 "fps": 12,
                 "options": {}
             },
+            "routing": {},
             "api": {
                 "platform": {
                     "endPoint": "localhost"
@@ -58,7 +66,7 @@ describe("ConfigParserTest", () =>
             "v1": "version/1"
         };
 
-        const parser = new ConfigParser();
+        $setConfig(config);
 
         expect(parser.execute("{{ api.platform.endPoint }}/{{ v1 }}/test"))
             .toBe("localhost/version/1/test");
@@ -66,8 +74,9 @@ describe("ConfigParserTest", () =>
 
     test("parse config test case4", () =>
     {
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
             "stage": {
                 "width": 240,
                 "height": 240,
@@ -81,7 +90,7 @@ describe("ConfigParserTest", () =>
             }
         };
 
-        const parser = new ConfigParser();
+        $setConfig(config);
 
         expect(parser.execute("{{ api.platform.endPoint }}/{{ v1 }}/test"))
             .toBe("localhost/{{ v1 }}/test");
@@ -89,7 +98,6 @@ describe("ConfigParserTest", () =>
 
     test("parse config test case5", () =>
     {
-        const parser = new ConfigParser();
         expect(parser.execute()).toBe("");
     });
 });

@@ -7,7 +7,6 @@ describe("RequestType Test", () =>
         expect(RequestType.CLUSTER).toBe("cluster");
         expect(RequestType.CONTENT).toBe("content");
         expect(RequestType.CUSTOM).toBe("custom");
-        expect(RequestType.IMAGE).toBe("image");
         expect(RequestType.JSON).toBe("json");
     });
 });

@@ -1,5 +1,5 @@
 import { Callback } from "../../../src/domain/callback/Callback";
-import { ConfigParser } from "../../../src/domain/parser/ConfigParser";
+import { packages } from "../../../src/application/variable/Packages";
 
 describe("CallbackTest", () =>
 {
@@ -17,11 +17,6 @@ describe("CallbackTest", () =>
     test("execute single test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const packages: Map<string, any> = new Map();
-
         const SingleTest = class SingleTest
         {
             execute (value: any): any
@@ -30,10 +25,8 @@ describe("CallbackTest", () =>
             }
         };
 
+        packages.clear();
         packages.set("SingleTest", SingleTest);
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const callback = new Callback();
         callback
@@ -53,11 +46,6 @@ describe("CallbackTest", () =>
     test("execute multiple test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const packages: Map<string, any> = new Map();
-
         const MultipleTestCase1 = class MultipleTest
         {
             execute (value: any): any
@@ -74,11 +62,9 @@ describe("CallbackTest", () =>
             }
         };
 
+        packages.clear();
         packages.set("multiple.test.case1", MultipleTestCase1);
         packages.set("multiple.test.case2", MultipleTestCase2);
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const callback = new Callback();
         callback

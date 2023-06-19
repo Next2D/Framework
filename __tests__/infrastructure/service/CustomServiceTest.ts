@@ -1,7 +1,8 @@
 import { CustomService } from "../../../src/infrastructure/service/CustomService";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
-import { ConfigParser } from "../../../src/domain/parser/ConfigParser";
 import { ResponseDTO } from "../../../src/infrastructure/dto/ResponseDTO";
+import { cache } from "../../../src/application/variable/Cache";
+import { packages } from "../../../src/application/variable/Packages";
 
 interface Object {
     type: string;
@@ -21,16 +22,7 @@ describe("CustomService Test", () =>
     test("execute load test use cache", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const cache: Map<string, any> = new Map();
         cache.clear();
-
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        const packages: Map<string, any> = new Map();
 
         const TestCallback = function ()
         {
@@ -41,6 +33,7 @@ describe("CustomService Test", () =>
             };
         };
 
+        packages.clear();
         packages.set("TestCallback", TestCallback);
 
         const TestRepository = {
@@ -50,9 +43,6 @@ describe("CustomService Test", () =>
         };
 
         packages.set("TestRepository", TestRepository);
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const customService = new CustomService();
 
@@ -87,16 +77,7 @@ describe("CustomService Test", () =>
     test("execute load test no use cache", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const cache: Map<string, any> = new Map();
         cache.clear();
-
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        const packages: Map<string, any> = new Map();
 
         const TestCallback = function ()
         {
@@ -107,6 +88,7 @@ describe("CustomService Test", () =>
             };
         };
 
+        packages.clear();
         packages.set("TestCallback", TestCallback);
 
         const TestRepository = {
@@ -116,9 +98,6 @@ describe("CustomService Test", () =>
         };
 
         packages.set("TestRepository", TestRepository);
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const customService = new CustomService();
 
@@ -151,16 +130,7 @@ describe("CustomService Test", () =>
     test("execute cache test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        const cache: Map<string, any> = new Map();
         cache.set("CustomRepository", "success cache custom");
-
-        // @ts-ignore
-        next2d.fw.cache = cache;
-
-        const packages: Map<string, any> = new Map();
 
         const TestCallback = function ()
         {
@@ -171,6 +141,7 @@ describe("CustomService Test", () =>
             };
         };
 
+        packages.clear();
         packages.set("TestCallback", TestCallback);
 
         const TestRepository = {
@@ -180,9 +151,6 @@ describe("CustomService Test", () =>
         };
 
         packages.set("TestRepository", TestRepository);
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const customService = new CustomService();
 

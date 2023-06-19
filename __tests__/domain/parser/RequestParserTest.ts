@@ -1,5 +1,6 @@
 import { RequestParser } from "../../../src/domain/parser/RequestParser";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
+import { $setConfig } from "../../../src/application/variable/Config";
 
 interface Object {
     type: string;
@@ -17,10 +18,19 @@ describe("RequestParserTest", () =>
     test("request parse no match test case1", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
             "routing": {}
         };
+
+        $setConfig(config);
 
         const requestParser: RequestParser = new RequestParser();
         const requests: Object[] = requestParser.execute("top");
@@ -30,12 +40,21 @@ describe("RequestParserTest", () =>
     test("request parse no match test case2", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
             "routing": {
                 "top": {}
             }
         };
+
+        $setConfig(config);
 
         const requestParser: RequestParser = new RequestParser();
         const requests: Object[] = requestParser.execute("top");
@@ -45,8 +64,15 @@ describe("RequestParserTest", () =>
     test("request parse match test case1", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
             "routing": {
                 "top": {
                     "requests": [
@@ -59,6 +85,8 @@ describe("RequestParserTest", () =>
                 }
             }
         };
+
+        $setConfig(config);
 
         const requestParser: RequestParser = new RequestParser();
         const requests: Object[] = requestParser.execute("top");
@@ -73,8 +101,15 @@ describe("RequestParserTest", () =>
     test("request parse cluster test case1", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
             "routing": {
                 "@sample": {
                     "requests": [
@@ -101,6 +136,8 @@ describe("RequestParserTest", () =>
                 }
             }
         };
+
+        $setConfig(config);
 
         const requestParser: RequestParser = new RequestParser();
         const requests: Object[] = requestParser.execute("top");

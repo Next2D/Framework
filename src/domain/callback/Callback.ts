@@ -1,4 +1,5 @@
-import { ConfigParser } from "../parser/ConfigParser";
+import { packages } from "../../application/variable/Packages";
+import { parser } from "../../application/variable/Parser";
 
 /**
  * @class
@@ -28,11 +29,6 @@ export class Callback
 
         const promises: Promise<any>[] = [];
 
-        // @ts-ignore
-        const packages: Map<string. any> = next2d.fw.packages;
-
-        // @ts-ignore
-        const parser: ConfigParser = next2d.fw.parser;
         for (let idx: number = 0; idx < callbacks.length; ++idx) {
 
             const name: string = parser.execute(callbacks[idx]);

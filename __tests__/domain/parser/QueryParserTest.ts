@@ -1,4 +1,6 @@
 import { QueryParser } from "../../../src/domain/parser/QueryParser";
+import { query } from "../../../src/application/variable/Query";
+import { $setConfig } from "../../../src/application/variable/Config";
 
 interface Object {
     name: string;
@@ -9,16 +11,9 @@ describe("QueryParserTest", () =>
 {
     test("parse query test case1", () =>
     {
-        // mock
-        // @ts-ignore
-        next2d.fw.config = {};
-
-        const query: Map<string, any> = new Map();
+        query.clear();
         query.set("test", 123);
         expect(query.size).toBe(1);
-
-        // @ts-ignore
-        next2d.fw.query = query;
 
         const queryParser = new QueryParser();
         const object: Object = queryParser.execute();
@@ -30,15 +25,8 @@ describe("QueryParserTest", () =>
 
     test("parse query test case2", () =>
     {
-        // mock
-        // @ts-ignore
-        next2d.fw.config = {};
-
-        const query: Map<string, any> = new Map();
+        query.clear();
         expect(query.size).toBe(0);
-
-        // @ts-ignore
-        next2d.fw.query = query;
 
         const queryParser = new QueryParser();
         const object: Object = queryParser.execute("@test");
@@ -50,18 +38,11 @@ describe("QueryParserTest", () =>
 
     test("parse location.search test case1", () =>
     {
-        // mock
-        // @ts-ignore
-        next2d.fw.config = {};
-
         // @ts-ignore
         globalThis.location.search = "?q=abc&sample=1";
 
-        const query: Map<string, any> = new Map();
+        query.clear();
         expect(query.size).toBe(0);
-
-        // @ts-ignore
-        next2d.fw.query = query;
 
         const queryParser = new QueryParser();
         const object: Object = queryParser.execute("");
@@ -76,12 +57,21 @@ describe("QueryParserTest", () =>
     test("parse location.pathname un match test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
             "routing": {
                 "top": {}
             }
         };
+
+        $setConfig(config);
 
         // @ts-ignore
         globalThis.location.pathname = "/quest/list";
@@ -89,11 +79,8 @@ describe("QueryParserTest", () =>
         // @ts-ignore
         globalThis.location.search   = "?q=xyz&sample=0";
 
-        const query: Map<string, any> = new Map();
+        query.clear();
         expect(query.size).toBe(0);
-
-        // @ts-ignore
-        next2d.fw.query = query;
 
         const queryParser = new QueryParser();
         const object: Object = queryParser.execute("");
@@ -108,8 +95,15 @@ describe("QueryParserTest", () =>
     test("parse location.pathname public test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
             "routing": {
                 "quest/list": {
                     "private": false
@@ -117,17 +111,16 @@ describe("QueryParserTest", () =>
             }
         };
 
+        $setConfig(config);
+
         // @ts-ignore
         globalThis.location.pathname = "/quest/list";
 
         // @ts-ignore
         globalThis.location.search   = "?q=xyz&sample=0";
 
-        const query: Map<string, any> = new Map();
+        query.clear();
         expect(query.size).toBe(0);
-
-        // @ts-ignore
-        next2d.fw.query = query;
 
         const queryParser = new QueryParser();
         const object: Object = queryParser.execute("");
@@ -142,8 +135,15 @@ describe("QueryParserTest", () =>
     test("parse location.pathname private test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
             "routing": {
                 "quest/list": {
                     "private": true
@@ -151,17 +151,16 @@ describe("QueryParserTest", () =>
             }
         };
 
+        $setConfig(config);
+
         // @ts-ignore
         globalThis.location.pathname = "/quest/list";
 
         // @ts-ignore
         globalThis.location.search   = "?q=xyz&sample=0";
 
-        const query: Map<string, any> = new Map();
+        query.clear();
         expect(query.size).toBe(0);
-
-        // @ts-ignore
-        next2d.fw.query = query;
 
         const queryParser = new QueryParser();
         const object: Object = queryParser.execute("");
@@ -176,8 +175,15 @@ describe("QueryParserTest", () =>
     test("parse location.pathname redirect test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
             "routing": {
                 "quest/list": {
                     "private": true,
@@ -186,17 +192,16 @@ describe("QueryParserTest", () =>
             }
         };
 
+        $setConfig(config);
+
         // @ts-ignore
         globalThis.location.pathname = "/quest/list";
 
         // @ts-ignore
         globalThis.location.search   = "?q=xyz&sample=0";
 
-        const query: Map<string, any> = new Map();
+        query.clear();
         expect(query.size).toBe(0);
-
-        // @ts-ignore
-        next2d.fw.query = query;
 
         const queryParser = new QueryParser();
         const object: Object = queryParser.execute("");
@@ -211,11 +216,8 @@ describe("QueryParserTest", () =>
     test("parse name query test", () =>
     {
         // mock
-        const query: Map<string, any> = new Map();
+        query.clear();
         expect(query.size).toBe(0);
-
-        // @ts-ignore
-        next2d.fw.query = query;
 
         const queryParser = new QueryParser();
         const object: Object = queryParser.execute("page/test?abc=123&xyz=999");
@@ -230,11 +232,8 @@ describe("QueryParserTest", () =>
     test("parse name path test case1", () =>
     {
         // mock
-        const query: Map<string, any> = new Map();
+        query.clear();
         expect(query.size).toBe(0);
-
-        // @ts-ignore
-        next2d.fw.query = query;
 
         const queryParser = new QueryParser();
         const object: Object = queryParser.execute("./test");
@@ -246,11 +245,8 @@ describe("QueryParserTest", () =>
     test("parse name path test case2", () =>
     {
         // mock
-        const query: Map<string, any> = new Map();
+        query.clear();
         expect(query.size).toBe(0);
-
-        // @ts-ignore
-        next2d.fw.query = query;
 
         const queryParser = new QueryParser();
         const object: Object = queryParser.execute("./");

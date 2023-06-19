@@ -1,3 +1,6 @@
+import { config } from "../../application/variable/Config";
+import { query } from "../../application/variable/Query";
+
 interface Object {
     name: string;
     queryString: string;
@@ -20,12 +23,6 @@ export class QueryParser
      */
     execute (name: string = ""): Object
     {
-        // @ts-ignore
-        const config: any = next2d.fw.config;
-
-        // @ts-ignore
-        const query: Map<string, any> = next2d.fw.query;
-
         if (query.size) {
             query.clear();
         }
@@ -48,7 +45,7 @@ export class QueryParser
             const names: string[] = location.pathname.split("/");
             names.shift();
             name = `${names.join("/")}`;
-            if (name) {
+            if (name && config && config.routing) {
                 const routing: any = config.routing[name];
                 if (!routing) {
                     name = "top";

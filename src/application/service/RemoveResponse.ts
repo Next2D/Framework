@@ -1,5 +1,8 @@
 import { RequestType } from "../../infrastructure/constant/RequestType";
 import { RequestParser } from "../../domain/parser/RequestParser";
+import { loaderInfoMap } from "../variable/LoaderInfoMap";
+import { response } from "../variable/Response";
+import type { LoaderInfo } from "@next2d/player/dist/player/next2d/display/LoaderInfo";
 
 interface Object {
     type: string;
@@ -41,9 +44,6 @@ export class RemoveResponse
      */
     execute (name: string): void
     {
-        // @ts-ignore
-        const response: Map<string, any> = next2d.fw.response;
-
         const requests: Object[] = this._$requestParser.execute(name);
         for (let idx: number = 0; idx < requests.length; ++idx) {
 
@@ -62,13 +62,12 @@ export class RemoveResponse
              * Remove non-cached packages from in-memory
              */
             const content: any = response.get(object.name);
-            const loaderInfo: any = content._$loaderInfo;
-            if (loaderInfo._$data) {
-                const symbols: Map<string, any> = loaderInfo._$data.symbols;
+            const contentLoaderInfo: LoaderInfo = content._$loaderInfo;
+            if (contentLoaderInfo._$data) {
+                const symbols: Map<string, any> = contentLoaderInfo._$data.symbols;
                 if (symbols.size) {
                     for (const name of symbols.keys()) {
-                        // @ts-ignore
-                        next2d.fw.loaderInfo.delete(name);
+                        loaderInfoMap.delete(name);
                     }
                 }
             }

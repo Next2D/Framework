@@ -1,7 +1,8 @@
 import { CustomRepository } from "../repository/CustomRepository";
 import { Callback } from "../../domain/callback/Callback";
 import { ResponseDTO } from "../dto/ResponseDTO";
-import { ConfigParser } from "../../domain/parser/ConfigParser";
+import { parser } from "../../application/variable/Parser";
+import { cache } from "../../application/variable/Cache";
 
 interface Object {
     type: string;
@@ -66,12 +67,6 @@ export class CustomService
          */
         if (object.cache && object.name) {
 
-            // @ts-ignore
-            const parser: ConfigParser = next2d.fw.parser;
-
-            // @ts-ignore
-            const cache: Map<string, any>  = next2d.fw.cache;
-
             const name: string = parser.execute(object.name);
             if (cache.size && cache.has(name)) {
 
@@ -98,13 +93,8 @@ export class CustomService
             .execute(object)
             .then((response: any) =>
             {
-                // @ts-ignore
-                const parser: ConfigParser = next2d.fw.parser;
-
                 const name:string = parser.execute(object.name);
                 if (object.cache && object.name) {
-                    // @ts-ignore
-                    const cache: Map<string, any>  = next2d.fw.cache;
                     cache.set(name, response);
                 }
 

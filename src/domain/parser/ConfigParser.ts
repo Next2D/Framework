@@ -1,3 +1,5 @@
+import { config } from "../../application/variable/Config";
+
 /**
  * configファイルに設定した変数パスのパーサークラス
  * Parser class for variable paths set in config file
@@ -22,7 +24,8 @@ export class ConfigParser
             return value;
         }
 
-        const values: RegExpMatchArray|null = value.match(/\{\{(.*?)\}\}/g);
+        const regexp = new RegExp(/{{(.*?)}}/, "g");
+        const values: RegExpMatchArray | null = value.match(regexp);
         if (!values) {
             return value;
         }
@@ -37,21 +40,23 @@ export class ConfigParser
                 .replace(/ /g, "")
                 .split(".");
 
-            // @ts-ignore
-            let config: any = next2d.fw.config;
-            for (let idx: number = 0; idx < names.length; ++idx) {
-                const name: string = names[idx];
-                if (name in config) {
-                    config = config[name];
-                }
-            }
-
-            // @ts-ignore
-            if (config === next2d.fw.config) {
+            if (!names.length) {
                 continue;
             }
 
-            returnValue = returnValue.replace(value, config);
+            let configValue: any = config;
+            for (let idx: number = 0; idx < names.length; ++idx) {
+                const name: string = names[idx];
+                if (name in configValue) {
+                    configValue = configValue[name];
+                }
+            }
+
+            if (config === configValue) {
+                continue;
+            }
+
+            returnValue = returnValue.replace(value, configValue);
         }
 
         return returnValue;

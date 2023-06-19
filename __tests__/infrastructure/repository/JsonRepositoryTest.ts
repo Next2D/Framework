@@ -1,6 +1,5 @@
-import { JsonRepository } from "../../../src/infrastructure/repository/JsonRepository"
+import { JsonRepository } from "../../../src/infrastructure/repository/JsonRepository";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
-import { ConfigParser } from "../../../src/domain/parser/ConfigParser";
 
 interface Object {
     type: string;
@@ -18,9 +17,6 @@ describe("JsonRepository Test", () =>
     test("execute fetch get test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
         const object: Object = {
             "type": RequestType.JSON,
             "name": "JsonRepository",
@@ -50,9 +46,6 @@ describe("JsonRepository Test", () =>
     test("execute fetch post test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
         const object: Object = {
             "type": RequestType.JSON,
             "name": "JsonRepository",
@@ -90,9 +83,6 @@ describe("JsonRepository Test", () =>
     test("execute fetch put test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
         const object: Object = {
             "type": RequestType.JSON,
             "name": "JsonRepository",

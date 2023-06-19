@@ -1,6 +1,9 @@
 import { ToCamelCase } from "../domain/convert/ToCamelCase";
-import { View } from "../view/View";
-import { ViewModel } from "../view/ViewModel";
+import { Event } from "@next2d/player/dist/player/next2d/events/Event";
+import { packages } from "./variable/Packages";
+import type { View } from "../view/View";
+import type { ViewModel } from "../view/ViewModel";
+import type { Sprite } from "@next2d/player/dist/player/next2d/display/Sprite";
 
 /**
  * メインコンテキスト、ViewとViewModelのunbind、bindをコントロールします。
@@ -10,23 +13,20 @@ import { ViewModel } from "../view/ViewModel";
  */
 export class Context
 {
-    private _$view: View|null;
-    private _$viewModel: ViewModel|null;
+    private _$view: View | null;
+    private _$viewModel: ViewModel | null;
     private _$viewName: string;
-    private readonly _$root: any;
+    private readonly _$root: Sprite;
     private readonly _$toCamelCase: ToCamelCase;
 
     /**
-     * @param {number} [width=240]
-     * @param {number} [height=240]
-     * @param {number} [fps=30]
-     * @param {object} [options=null]
+     * @param {Sprite} root
      *
      * @constructor
      * @public
      */
-    constructor (width: number = 240, height: number = 240, fps: number = 30, options: any = null)
-    {
+    constructor (root: Sprite) {
+
         /**
          * @type {View}
          * @default null
@@ -49,13 +49,11 @@ export class Context
         this._$viewName = "Top";
 
         /**
-         * @type {next2d.display.Sprite}
+         * @type {Sprite}
+         * @default null
          * @private
          */
-        // @ts-ignore
-        this._$root = next2d.createRootMovieClip(
-            width, height, fps, options
-        );
+        this._$root = root;
 
         /**
          * @type {ToCamelCase}
@@ -68,11 +66,11 @@ export class Context
      * @description StageクラスにセットされたrootのSpriteを返却します。
      *              Returns the Sprite of the root set in the Stage class.
      *
-     * @return {next2d.display.Sprite}
+     * @return {Sprite}
      * @readonly
      * @public
      */
-    get root (): any
+    get root (): Sprite
     {
         return this._$root;
     }
@@ -86,7 +84,7 @@ export class Context
      * @readonly
      * @public
      */
-    get view (): View|null
+    get view (): View | null
     {
         return this._$view;
     }
@@ -100,7 +98,7 @@ export class Context
      * @readonly
      * @public
      */
-    get viewModel (): ViewModel|null
+    get viewModel (): ViewModel | null
     {
         return this._$viewModel;
     }
@@ -128,19 +126,15 @@ export class Context
      * @method
      * @public
      */
-    addChild (name: string): Promise<View|void>
+    addChild (name: string): Promise<View | void>
     {
-        // @ts-ignore
-        const { Event } = next2d.events;
-
         this._$viewName = this._$toCamelCase.execute(name);
 
         const viewName: string      = `${this._$viewName}View`;
         const viewModelName: string = `${viewName}Model`;
 
-        // @ts-ignore
-        const packages: Map<string, any> = next2d.fw.packages;
-        if (!packages.has(viewName)
+        if (!packages.size
+            || !packages.has(viewName)
             || !packages.has(viewModelName)
         ) {
             return Promise.resolve();
@@ -152,7 +146,6 @@ export class Context
         const ViewClass: typeof View = packages.get(viewName);
         this._$view = new ViewClass();
 
-        // @ts-ignore
         this._$view.addEventListener(Event.REMOVED, (event: any) =>
         {
             if (this._$viewModel) {
@@ -161,7 +154,6 @@ export class Context
         });
 
         return Promise
-            // @ts-ignore
             .all([this._$viewModel.bind(this._$view)])
             .then(() =>
             {
@@ -169,16 +161,17 @@ export class Context
                     return ;
                 }
 
-                const root: any = this._$root;
+                const root: Sprite | null = this._$root;
+                if (!root) {
+                    throw new Error("the root is null.");
+                }
 
-                // @ts-ignore
                 root.addChild(this._$view);
 
                 while (root.numChildren > 1) {
                     root.removeChild(root.getChildAt(0));
                 }
 
-                // @ts-ignore
                 root.mouseChildren = true;
 
                 return this._$view;

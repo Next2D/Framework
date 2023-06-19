@@ -1,11 +1,75 @@
 globalThis.$windowEventMap = new Map();
+globalThis.OffscreenCanvas = class OffscreenCanvas
+{
+    getContext ()
+    {
+        return {};
+    }
+};
+
+globalThis.cancelAnimationFrame = () =>
+{
+    return undefined;
+};
+
+const xhrMockClass = () => ({
+    "open"            : jest.fn(),
+    "send"            : jest.fn(),
+    "setRequestHeader": jest.fn(),
+    "addEventListener": jest.fn()
+});
+
+globalThis.XMLHttpRequest = jest.fn().mockImplementation(xhrMockClass);
+
 globalThis.window = {
+    "document": {
+        "createElement": () =>
+        {
+            const attribute = new Map();
+            return {
+                "getAttribute": (name) =>
+                {
+                    return attribute.has(name)
+                        ? attribute.get(name)
+                        : null;
+                },
+                "setAttribute": (name, value) =>
+                {
+                    attribute.set(name, value);
+                },
+                "insertBefore": (element) =>
+                {
+                    if (element.id) {
+                        globalThis.$elements.set(element.id, element);
+                    }
+                },
+                "getContext": () => {
+                    return {
+                        "measureText": () => {
+                            return {
+                                "width": 0
+                            };
+                        }
+                    };
+                },
+                "style": {},
+                "children": []
+            };
+        }
+    },
     "devicePixelRatio": 2,
+    "OffscreenCanvas": () =>
+    {
+        return undefined;
+    },
     "addEventListener": (type, callback) =>
     {
         globalThis.$windowEventMap.set(type, callback);
     },
     "next2d": {
+        "createRootMovieClip": () => {
+            return Promise.resolve();
+        },
         "display": {
             "MovieClip": class MovieClip
             {
@@ -136,6 +200,12 @@ globalThis.window = {
                 }
             }
         },
+        "player": {
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+        }
     }
 };
 

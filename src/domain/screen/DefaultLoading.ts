@@ -1,3 +1,6 @@
+import { $currentPlayer } from "@next2d/player/dist/player/util/Util";
+import type { Player } from "@next2d/player/dist/player/player/Player";
+
 /**
  * @class
  * @memberof domain.screen
@@ -30,16 +33,12 @@ export class DefaultLoading
      */
     start (): void
     {
-        const element: HTMLElement|null = document.getElementById(this._$elementId);
+        const element: HTMLElement | null = document.getElementById(this._$elementId);
         if (!element) {
 
-            // @ts-ignore
-            const root: any = next2d.fw.context.root;
+            const player: Player = $currentPlayer();
 
-            // @ts-ignore
-            const player: any = root.stage.player;
-
-            const parent: HTMLElement|null = document
+            const parent: HTMLElement | null = document
                 .getElementById(player.contentElementId);
 
             if (!parent) {
@@ -122,7 +121,7 @@ export class DefaultLoading
      */
     end (): void
     {
-        const element: HTMLElement|null = document
+        const element: HTMLElement | null = document
             .getElementById(this._$elementId);
 
         if (element) {

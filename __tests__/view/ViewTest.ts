@@ -1,3 +1,4 @@
+import "@next2d/player";
 import { View } from "../../src/view/View";
 
 describe("ViewTest", () =>

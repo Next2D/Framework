@@ -1,28 +1,31 @@
+import { loaderInfoMap } from "../../../src/application/variable/LoaderInfoMap";
+import { response } from "../../../src/application/variable/Response";
 import { RemoveResponse } from "../../../src/application/service/RemoveResponse";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
+import { $setConfig } from "../../../src/application/variable/Config";
 
 describe("RemoveResponseTest", () =>
 {
     test("execute test", () =>
     {
         // mock
-        const loaderInfo = new Map();
-        loaderInfo.set("symbol_1", "abc");
-        loaderInfo.set("symbol_2", "xyz");
-        loaderInfo.set("symbol_3", "cache data");
-        expect(loaderInfo.size).toBe(3);
-        expect(loaderInfo.get("symbol_1")).toBe("abc");
-        expect(loaderInfo.get("symbol_2")).toBe("xyz");
-        expect(loaderInfo.get("symbol_3")).toBe("cache data");
-
+        loaderInfoMap.clear();
         // @ts-ignore
-        next2d.fw.loaderInfo = loaderInfo;
+        loaderInfoMap.set("symbol_1", "abc");
+        // @ts-ignore
+        loaderInfoMap.set("symbol_2", "xyz");
+        // @ts-ignore
+        loaderInfoMap.set("symbol_3", "cache data");
+        expect(loaderInfoMap.size).toBe(3);
+        expect(loaderInfoMap.get("symbol_1")).toBe("abc");
+        expect(loaderInfoMap.get("symbol_2")).toBe("xyz");
+        expect(loaderInfoMap.get("symbol_3")).toBe("cache data");
 
         // mock
         const symbols = new Map();
         symbols.set("symbol_1", true);
 
-        const response = new Map();
+        response.clear();
         response.set("test1", {
             "_$loaderInfo": {
                 "_$data": {
@@ -34,8 +37,15 @@ describe("RemoveResponseTest", () =>
         expect(response.size).toBe(2);
 
         // mock
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
             "routing": {
                 "test": {
                     "requests": [
@@ -57,17 +67,16 @@ describe("RemoveResponseTest", () =>
             }
         };
 
-        // @ts-ignore
-        next2d.fw.response = response;
+        $setConfig(config);
 
         // execute
         new RemoveResponse().execute("test");
 
         // test
         expect(response.size).toBe(0);
-        expect(loaderInfo.size).toBe(2);
-        expect(loaderInfo.has("symbol_1")).toBe(false);
-        expect(loaderInfo.has("symbol_2")).toBe(true);
-        expect(loaderInfo.has("symbol_3")).toBe(true);
+        expect(loaderInfoMap.size).toBe(2);
+        expect(loaderInfoMap.has("symbol_1")).toBe(false);
+        expect(loaderInfoMap.has("symbol_2")).toBe(true);
+        expect(loaderInfoMap.has("symbol_3")).toBe(true);
     });
 });

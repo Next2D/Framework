@@ -1,15 +1,25 @@
 import { Loading } from "../../../src/domain/loading/Loading";
-import { ConfigParser } from "../../../src/domain/parser/ConfigParser";
+import { $setConfig } from "../../../src/application/variable/Config";
+import { packages } from "../../../src/application/variable/Packages";
 
 describe("LoadingTest", () =>
 {
     test("loading do not start and end test case not config", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.config = {
-            "loading": false
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
+            "routing": {}
         };
+
+        $setConfig(config);
 
         const loading = new Loading();
         expect(loading.start()).toBe(undefined);
@@ -19,12 +29,22 @@ describe("LoadingTest", () =>
     test("loading do not start and end test case not callback", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
+            "routing": {},
             "loading": {
                 "callback": ""
             }
         };
+
+        $setConfig(config);
 
         const loading = new Loading();
         expect(loading.start()).toBe(undefined);
@@ -34,18 +54,24 @@ describe("LoadingTest", () =>
     test("default loading start and end test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
+            "routing": {},
             "loading": {
                 "callback": "test"
             }
         };
 
-        // @ts-ignore
-        next2d.fw.DefaultLoading = class DefaultLoading
+        $setConfig(config);
+
+        const TestLoading = class TestLoading
         {
             private readonly startValue: string;
             private readonly endValue: string;
@@ -67,11 +93,8 @@ describe("LoadingTest", () =>
             }
         };
 
-        const packages: Map<string, any> = new Map();
+        packages.set("test", TestLoading);
         packages.clear();
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const loading = new Loading();
         loading.start();
@@ -81,40 +104,22 @@ describe("LoadingTest", () =>
     test("callback loading start and end test", () =>
     {
         // mock
-        // @ts-ignore
-        next2d.fw.parser = new ConfigParser();
-
-        // @ts-ignore
-        next2d.fw.config = {
+        const config = {
+            "platform": "web",
+            "spa": true,
+            "stage": {
+                "width": 240,
+                "height": 240,
+                "fps": 12,
+                "options": {}
+            },
+            "routing": {},
             "loading": {
                 "callback": "origin.loader"
             }
         };
 
-        // @ts-ignore
-        next2d.fw.DefaultLoading = class DefaultLoading
-        {
-            private readonly startValue: string;
-            private readonly endValue: string;
-
-            constructor()
-            {
-                this.startValue = "start";
-                this.endValue   = "end";
-            }
-
-            start ()
-            {
-                expect(this.startValue).toBe("not start");
-            }
-
-            end ()
-            {
-                expect(this.endValue).toBe("not end");
-            }
-        };
-
-        const packages: Map<string, any> = new Map();
+        $setConfig(config);
 
         const OriginLoader = class OriginLoader
         {
@@ -138,10 +143,8 @@ describe("LoadingTest", () =>
             }
         };
 
+        packages.clear();
         packages.set("origin.loader", OriginLoader);
-
-        // @ts-ignore
-        next2d.fw.packages = packages;
 
         const loading = new Loading();
         loading.start();
