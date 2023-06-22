@@ -4,6 +4,8 @@ import { packages } from "./variable/Packages";
 import type { View } from "../view/View";
 import type { ViewModel } from "../view/ViewModel";
 import type { Sprite } from "@next2d/player/dist/player/next2d/display/Sprite";
+import type { ViewImpl } from "../interface/ViewImpl";
+import type { ViewModelImpl } from "../interface/ViewModelImpl";
 
 /**
  * メインコンテキスト、ViewとViewModelのunbind、bindをコントロールします。
@@ -13,8 +15,8 @@ import type { Sprite } from "@next2d/player/dist/player/next2d/display/Sprite";
  */
 export class Context
 {
-    private _$view: View | null;
-    private _$viewModel: ViewModel | null;
+    private _$view: ViewImpl<any> | null;
+    private _$viewModel: ViewModelImpl<any> | null;
     private _$viewName: string;
     private readonly _$root: Sprite;
     private readonly _$toCamelCase: ToCamelCase;
@@ -84,7 +86,7 @@ export class Context
      * @readonly
      * @public
      */
-    get view (): View | null
+    get view (): ViewImpl<any> | null
     {
         return this._$view;
     }
@@ -98,7 +100,7 @@ export class Context
      * @readonly
      * @public
      */
-    get viewModel (): ViewModel | null
+    get viewModel (): ViewModelImpl<any> | null
     {
         return this._$viewModel;
     }
@@ -126,7 +128,7 @@ export class Context
      * @method
      * @public
      */
-    addChild (name: string): Promise<View | void>
+    addChild (name: string): Promise<ViewImpl<any> | void>
     {
         this._$viewName = this._$toCamelCase.execute(name);
 
@@ -146,7 +148,7 @@ export class Context
         const ViewClass: typeof View = packages.get(viewName);
         this._$view = new ViewClass();
 
-        this._$view.addEventListener(Event.REMOVED, (event: any) =>
+        this._$view.addEventListener(Event.REMOVED, (event: Event) =>
         {
             if (this._$viewModel) {
                 this._$viewModel.unbind(event.target);
