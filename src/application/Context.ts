@@ -4,8 +4,6 @@ import { packages } from "./variable/Packages";
 import type { View } from "../view/View";
 import type { ViewModel } from "../view/ViewModel";
 import type { Sprite } from "@next2d/player/dist/player/next2d/display/Sprite";
-import type { ViewImpl } from "../interface/ViewImpl";
-import type { ViewModelImpl } from "../interface/ViewModelImpl";
 
 /**
  * メインコンテキスト、ViewとViewModelのunbind、bindをコントロールします。
@@ -15,8 +13,8 @@ import type { ViewModelImpl } from "../interface/ViewModelImpl";
  */
 export class Context
 {
-    private _$view: ViewImpl<any> | null;
-    private _$viewModel: ViewModelImpl<any> | null;
+    private _$view: View | null;
+    private _$viewModel: ViewModel | null;
     private _$viewName: string;
     private readonly _$root: Sprite;
     private readonly _$toCamelCase: ToCamelCase;
@@ -86,7 +84,7 @@ export class Context
      * @readonly
      * @public
      */
-    get view (): ViewImpl<any> | null
+    get view (): View | null
     {
         return this._$view;
     }
@@ -100,7 +98,7 @@ export class Context
      * @readonly
      * @public
      */
-    get viewModel (): ViewModelImpl<any> | null
+    get viewModel (): ViewModel | null
     {
         return this._$viewModel;
     }
@@ -128,7 +126,7 @@ export class Context
      * @method
      * @public
      */
-    addChild (name: string): Promise<ViewImpl<any> | void>
+    addChild (name: string): Promise<View | void>
     {
         this._$viewName = this._$toCamelCase.execute(name);
 

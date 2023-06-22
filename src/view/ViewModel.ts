@@ -1,4 +1,4 @@
-import type { ViewImpl } from "../interface/ViewImpl";
+import type { View } from "./View";
 
 /**
  * ViewModelの親クラス、抽象クラスとして存在しています。
@@ -18,7 +18,7 @@ export class ViewModel
      * @method
      * @abstract
      */
-    bind (view: ViewImpl<any>): Promise<ViewImpl<any>>
+    bind (view: View): Promise<View>
     {
         return this.factory(view);
     }
@@ -33,7 +33,7 @@ export class ViewModel
      * @public
      */
     // eslint-disable-next-line no-unused-vars,no-empty-function
-    unbind (view: ViewImpl<any>): void {}
+    unbind (view: View): void {}
 
     /**
      * @description bind関数で非同期で処理を開始する共通関数です。
@@ -44,11 +44,11 @@ export class ViewModel
      * @method
      * @public
      */
-    factory (view: ViewImpl<any>): Promise<ViewImpl<any>>
+    factory (view: View): Promise<View>
     {
         return new Promise((resolve) =>
         {
-            requestAnimationFrame(() => {
+            requestAnimationFrame((): void => {
                 return resolve(view);
             });
         });
