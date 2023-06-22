@@ -3,6 +3,7 @@ import { response } from "../../../src/application/variable/Response";
 import { RemoveResponse } from "../../../src/application/service/RemoveResponse";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
 import { $setConfig } from "../../../src/application/variable/Config";
+import {RequestImpl} from "../../../src/interface/RequestImpl";
 
 describe("RemoveResponseTest", () =>
 {

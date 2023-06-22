@@ -1,8 +1,9 @@
 import { RequestType } from "../../infrastructure/constant/RequestType";
 import { config } from "../../application/variable/Config";
+import type { RequestTypeImpl } from "../../interface/RequestTypeImpl";
 
 interface Object {
-    type: string;
+    type: RequestTypeImpl;
     name: string;
     path: string;
     cache: boolean;

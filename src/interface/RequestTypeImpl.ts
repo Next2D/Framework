@@ -1,1 +1,1 @@
-export type RequestTypeImpl = "json" | "content" | "custom";
+export type RequestTypeImpl = "json" | "content" | "custom" | "cluster";

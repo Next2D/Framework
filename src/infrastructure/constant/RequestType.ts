@@ -1,3 +1,5 @@
+import type { RequestTypeImpl } from "../../interface/RequestTypeImpl";
+
 /**
  * リクエストタイプの定数
  * Request Type Constants
@@ -16,7 +18,7 @@ export class RequestType
      * @const
      * @static
      */
-    static get CLUSTER (): string
+    static get CLUSTER (): RequestTypeImpl
     {
         return "cluster";
     }
@@ -30,7 +32,7 @@ export class RequestType
      * @const
      * @static
      */
-    static get CONTENT (): string
+    static get CONTENT (): RequestTypeImpl
     {
         return "content";
     }
@@ -44,7 +46,7 @@ export class RequestType
      * @const
      * @static
      */
-    static get CUSTOM (): string
+    static get CUSTOM (): RequestTypeImpl
     {
         return "custom";
     }
@@ -58,7 +60,7 @@ export class RequestType
      * @const
      * @static
      */
-    static get JSON (): string
+    static get JSON (): RequestTypeImpl
     {
         return "json";
     }

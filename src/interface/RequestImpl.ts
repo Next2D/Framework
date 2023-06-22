@@ -1,5 +1,7 @@
+import { RequestTypeImpl } from "./RequestTypeImpl";
+
 export interface RequestImpl {
-    type: string;
+    type: RequestTypeImpl;
     path?: string;
     name?: string;
     cache?: boolean;

@@ -22,7 +22,7 @@ describe("ApplicationTest", () =>
             "routing": {
                 "test": {
                     "requests": [{
-                        "type": "json",
+                        "type": RequestType.JSON,
                         "path": "."
                     }]
                 }
@@ -50,7 +50,7 @@ describe("ApplicationTest", () =>
             "routing": {
                 "test": {
                     "requests": [{
-                        "type": "json",
+                        "type": RequestType.JSON,
                         "path": "."
                     }]
                 }

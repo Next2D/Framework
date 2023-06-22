@@ -1,9 +1,10 @@
 import { RequestParser } from "../../../src/domain/parser/RequestParser";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
 import { $setConfig } from "../../../src/application/variable/Config";
+import { RequestTypeImpl } from "../../../src/interface/RequestTypeImpl";
 
 interface Object {
-    type: string;
+    type: RequestTypeImpl;
     name: string;
     path: string;
     cache?: boolean;
@@ -114,7 +115,7 @@ describe("RequestParserTest", () =>
                 "@sample": {
                     "requests": [
                         {
-                            "type": "content",
+                            "type": RequestType.CONTENT,
                             "path": "{{ content.endPoint }}content/sample.json",
                             "name": "MainContent",
                             "cache": true
@@ -124,11 +125,11 @@ describe("RequestParserTest", () =>
                 "top": {
                     "requests": [
                         {
-                            "type": "cluster",
+                            "type": RequestType.CLUSTER,
                             "path": "@sample"
                         },
                         {
-                            "type": "json",
+                            "type": RequestType.JSON,
                             "path": "{{ api.endPoint }}api/top.json",
                             "name": "TopText"
                         }
