@@ -34,7 +34,6 @@ export class Application
     private readonly _$removeResponse: RemoveResponse;
     private _$popstate: boolean;
     private _$currentName: string;
-    private readonly _$promises: Promise<void>[];
 
     /**
      * @constructor
@@ -44,8 +43,6 @@ export class Application
     {
         $setConfig(config);
         $setPackages(packages);
-
-        this._$promises = [$createContext(config)];
 
         /**
          * @type {QueryParser}
@@ -108,21 +105,20 @@ export class Application
          * @private
          */
         this._$currentName = "top";
-
-        // initial processing
-        this.initialize();
     }
 
     /**
-     * @description constructorが起動した後にコールされます。(初回起動時のみコールされます。)
-     *              Called after the constructor is invoked. (Called only the first time it is invoked.)
+     * @description Next2Dのアプリを起動します
+     *              Launch the Next2D application
      *
-     * @return {void}
+     * @return {Promise}
      * @method
-     * @abstract
+     * @public
      */
-    // eslint-disable-next-line no-empty-function
-    initialize (): void {}
+    run (): Promise<void>
+    {
+        return $createContext(config);
+    }
 
     /**
      * @description 指定のViewを起動して、描画を開始します。引数を指定しない場合はURLをパースしてViewを起動します。
@@ -136,32 +132,23 @@ export class Application
      */
     gotoView (name: string = ""): Promise<void>
     {
+        const promises: Promise<void>[] = [];
+        if (config.loading) {
+            /**
+             * ローディング表示を起動
+             * Launch loading display
+             */
+            this._$loading.start();
+
+            /**
+             * 現時点の描画をBitmapにして処理の負担を減らす
+             * Reduce the processing burden by making the current drawing a Bitmap.
+             */
+            promises.push(this._$capture.execute());
+        }
+
         return Promise
-            .all(this._$promises)
-            .then((): Promise<Awaited<void>[]> =>
-            {
-                // reset
-                if (this._$promises.length) {
-                    this._$promises.length = 0;
-                }
-
-                const promises: Promise<void>[] = [];
-                if (config.loading) {
-                    /**
-                     * ローディング表示を起動
-                     * Launch loading display
-                     */
-                    this._$loading.start();
-
-                    /**
-                     * 現時点の描画をBitmapにして処理の負担を減らす
-                     * Reduce the processing burden by making the current drawing a Bitmap.
-                     */
-                    promises.push(this._$capture.execute());
-                }
-
-                return Promise.all(promises);
-            })
+            .all(promises)
             .then((): Promise<void> =>
             {
                 /**

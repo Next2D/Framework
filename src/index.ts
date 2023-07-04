@@ -7,6 +7,7 @@ import { MovieClipContent } from "./application/content/MovieClipContent";
 import { ShapeContent } from "./application/content/ShapeContent";
 import { TextFieldContent } from "./application/content/TextFieldContent";
 import { VideoContent } from "./application/content/VideoContent";
+import { ConfigImpl } from "./interface/ConfigImpl";
 import { packages } from "./application/variable/Packages";
 import { context } from "./application/variable/Context";
 import { cache } from "./application/variable/Cache";
@@ -29,6 +30,7 @@ export {
     ShapeContent,
     TextFieldContent,
     VideoContent,
+    ConfigImpl,
     packages,
     context,
     cache,

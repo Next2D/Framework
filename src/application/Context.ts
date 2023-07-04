@@ -1,5 +1,4 @@
 import { ToCamelCase } from "../domain/convert/ToCamelCase";
-import { Event } from "@next2d/events";
 import { packages } from "./variable/Packages";
 import type { View } from "../view/View";
 import type { ViewModel } from "../view/ViewModel";

@@ -10,7 +10,7 @@ import { $createContext } from "../../src/application/variable/Context";
 
 describe("ApplicationTest", () =>
 {
-    test("initialize test", () => {
+    test("run test", () => {
 
         const config = {
             "platform": "web",
@@ -34,7 +34,12 @@ describe("ApplicationTest", () =>
 
         const app = new Application(config, packages);
 
-        expect(app.initialize()).toBe(undefined);
+        app
+            .run()
+            .then(() =>
+            {
+                expect(app instanceof Application).toBe(true);
+            });
     });
 
     test("loading test", () =>
