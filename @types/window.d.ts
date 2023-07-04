@@ -1,4 +1,4 @@
-import { Next2D } from "@next2d/player/dist/player/Next2D";
+import { Next2D } from "@next2d/core";
 
 declare global {
 

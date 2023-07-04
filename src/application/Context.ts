@@ -140,18 +140,14 @@ export class Context
             return Promise.resolve();
         }
 
+        const PrevView: View | null = this._$view;
+        const PrevViewModel: ViewModel | null = this._$viewModel;
+
         const ViewModelClass: typeof ViewModel = packages.get(viewModelName);
         this._$viewModel = new ViewModelClass();
 
         const ViewClass: typeof View = packages.get(viewName);
         this._$view = new ViewClass();
-
-        this._$view.addEventListener(Event.REMOVED, (event: Event) =>
-        {
-            if (this._$viewModel) {
-                this._$viewModel.unbind(event.target);
-            }
-        });
 
         return Promise
             .all([this._$viewModel.bind(this._$view)])
@@ -173,6 +169,10 @@ export class Context
                 }
 
                 root.mouseChildren = true;
+
+                if (PrevViewModel && PrevView) {
+                    PrevViewModel.unbind(PrevView);
+                }
 
                 return this._$view;
             });
