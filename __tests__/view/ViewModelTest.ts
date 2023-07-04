@@ -1,6 +1,8 @@
 import "@next2d/player";
-import { ViewModel } from "../../src/view/ViewModel";
-import { View } from "../../src/view/View";
+import {
+    View,
+    ViewModel
+} from "../../src";
 
 describe("ViewModelTest", () =>
 {

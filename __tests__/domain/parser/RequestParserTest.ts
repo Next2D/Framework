@@ -1,3 +1,4 @@
+import "@next2d/player";
 import { RequestParser } from "../../../src/domain/parser/RequestParser";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
 import { $setConfig } from "../../../src/application/variable/Config";

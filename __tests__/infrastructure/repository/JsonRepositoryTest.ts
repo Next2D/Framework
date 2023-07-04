@@ -1,3 +1,4 @@
+import "@next2d/player";
 import { JsonRepository } from "../../../src/infrastructure/repository/JsonRepository";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
 

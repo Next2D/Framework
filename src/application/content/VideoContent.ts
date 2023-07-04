@@ -1,4 +1,4 @@
-import { Video } from "@next2d/player/dist/player/next2d/media/Video";
+import { Video } from "@next2d/media";
 import { ContentBuilder } from "./ContentBuilder";
 
 /**

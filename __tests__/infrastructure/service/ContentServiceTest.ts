@@ -2,9 +2,11 @@ import "@next2d/player";
 import { ContentService } from "../../../src/infrastructure/service/ContentService";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
 import { ResponseDTO } from "../../../src/infrastructure/dto/ResponseDTO";
-import { cache } from "../../../src/application/variable/Cache";
-import { packages } from "../../../src/application/variable/Packages";
-import { loaderInfoMap } from "../../../src/application/variable/LoaderInfoMap";
+import {
+    cache,
+    packages,
+    loaderInfoMap
+} from "../../../src";
 
 interface Object {
     type: string;

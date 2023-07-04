@@ -1,6 +1,7 @@
+import "@next2d/player";
 import { CustomRepository } from "../../../src/infrastructure/repository/CustomRepository";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
-import { packages } from "../../../src/application/variable/Packages";
+import { packages } from "../../../src";
 
 interface Object {
     type: string;

@@ -1,3 +1,4 @@
+import "@next2d/player";
 import { ToCamelCase } from "../../../src/domain/convert/ToCamelCase";
 
 describe("ToCamelCaseTest", () =>

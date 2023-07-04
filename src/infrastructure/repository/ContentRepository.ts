@@ -1,9 +1,13 @@
 import { parser } from "../../application/variable/Parser";
-import { Event } from "@next2d/player/dist/player/next2d/events/Event";
-import { IOErrorEvent } from "@next2d/player/dist/player/next2d/events/IOErrorEvent";
-import { URLRequestHeader } from "@next2d/player/dist/player/next2d/net/URLRequestHeader";
-import { Loader } from "@next2d/player/dist/player/next2d/display/Loader";
-import { URLRequest } from "@next2d/player/dist/player/next2d/net/URLRequest";
+import {
+    Event,
+    IOErrorEvent
+} from "@next2d/events";
+import {
+    URLRequestHeader,
+    URLRequest
+} from "@next2d/net";
+import { Loader } from "@next2d/display";
 
 interface Object {
     type: string;

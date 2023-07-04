@@ -1,5 +1,6 @@
+import "@next2d/player";
 import { QueryParser } from "../../../src/domain/parser/QueryParser";
-import { query } from "../../../src/application/variable/Query";
+import { query } from "../../../src";
 import { $setConfig } from "../../../src/application/variable/Config";
 
 interface Object {

@@ -1,9 +1,11 @@
-import { loaderInfoMap } from "../../../src/application/variable/LoaderInfoMap";
-import { response } from "../../../src/application/variable/Response";
+import "@next2d/player";
+import {
+    response,
+    loaderInfoMap
+} from "../../../src";
 import { RemoveResponse } from "../../../src/application/service/RemoveResponse";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
 import { $setConfig } from "../../../src/application/variable/Config";
-import {RequestImpl} from "../../../src/interface/RequestImpl";
 
 describe("RemoveResponseTest", () =>
 {

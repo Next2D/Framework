@@ -1,8 +1,11 @@
+import "@next2d/player";
 import { CustomService } from "../../../src/infrastructure/service/CustomService";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
 import { ResponseDTO } from "../../../src/infrastructure/dto/ResponseDTO";
-import { cache } from "../../../src/application/variable/Cache";
-import { packages } from "../../../src/application/variable/Packages";
+import {
+    cache,
+    packages
+} from "../../../src";
 
 interface Object {
     type: string;

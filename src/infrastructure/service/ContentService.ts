@@ -4,7 +4,7 @@ import { ResponseDTO } from "../dto/ResponseDTO";
 import { parser } from "../../application/variable/Parser";
 import { cache } from "../../application/variable/Cache";
 import { loaderInfoMap } from "../../application/variable/LoaderInfoMap";
-import type { LoaderInfo } from "@next2d/player/dist/player/next2d/display/LoaderInfo";
+import type { LoaderInfo } from "@next2d/display";
 
 interface Object {
     type: string;

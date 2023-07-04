@@ -1,4 +1,4 @@
-import { Shape } from "@next2d/player/dist/player/next2d/display/Shape";
+import { Shape } from "@next2d/display";
 import { ContentBuilder } from "./ContentBuilder";
 
 /**

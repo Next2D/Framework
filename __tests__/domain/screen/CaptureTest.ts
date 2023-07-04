@@ -1,3 +1,4 @@
+import "@next2d/player";
 import { Capture } from "../../../src/domain/screen/Capture";
 import { context, $createContext } from "../../../src/application/variable/Context";
 import { $setConfig } from "../../../src/application/variable/Config";

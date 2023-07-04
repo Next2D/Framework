@@ -1,3 +1,4 @@
+import "@next2d/player";
 import { parser } from "../../../src/application/variable/Parser";
 import { $setConfig } from "../../../src/application/variable/Config";
 

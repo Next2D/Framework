@@ -1,5 +1,5 @@
-import { $currentPlayer } from "@next2d/player/dist/player/util/Util";
-import type { Player } from "@next2d/player/dist/player/player/Player";
+import { $currentPlayer } from "@next2d/util";
+import type { Player } from "@next2d/core";
 
 /**
  * @class

@@ -1,4 +1,4 @@
-import { TextField } from "@next2d/player/dist/player/next2d/text/TextField";
+import { TextField } from "@next2d/text";
 import { ContentBuilder } from "./ContentBuilder";
 
 /**

@@ -1,10 +1,10 @@
 {
   "name": "@next2d/framework",
   "description": "It is a framework dedicated to Next2D that enables scene management by URL (SPA), which has been difficult with conventional Canvas/WebGL applications, and simplifies readability and shareability by fixing the development pattern (MVVM).",
-  "version": "1.5.9",
+  "version": "1.5.10",
   "homepage": "https://next2d.app",
   "bugs": "https://github.com/Next2D/Framework/issues/new",
-  "author": "Toshiyuki Ienaga <ienaga@tvon.jp>",
+  "author": "Toshiyuki Ienaga <ienaga@tvon.jp> (https://github.com/ienaga/)",
   "license": "MIT",
   "main": "dist/index.js",
   "keywords": [
@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.22.5",
     "@babel/preset-env": "^7.22.5",
     "@next2d/jsdoc-template": "^1.0.7",
     "@types/jest": "^29.5.2",

@@ -1,3 +1,4 @@
+import "@next2d/player";
 import { RequestType } from "../../../src/infrastructure/constant/RequestType";
 
 describe("RequestType Test", () =>

@@ -1,9 +1,9 @@
 import { config } from "../../application/variable/Config";
 import { context } from "../../application/variable/Context";
-import { $currentPlayer } from "@next2d/player/dist/player/util/Util";
-import { Shape } from "@next2d/player/dist/player/next2d/display/Shape";
-import type { Sprite } from "@next2d/player/dist/player/next2d/display/Sprite";
-import type { Player } from "@next2d/player/dist/player/player/Player";
+import { $currentPlayer } from "@next2d/util";
+import { Shape } from "@next2d/display";
+import type { Sprite } from "@next2d/display";
+import type { Player } from "@next2d/core";
 /**
  * @class
  * @memberof domain.screen

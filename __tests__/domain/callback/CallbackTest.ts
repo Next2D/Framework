@@ -1,5 +1,6 @@
+import "@next2d/player";
 import { Callback } from "../../../src/domain/callback/Callback";
-import { packages } from "../../../src/application/variable/Packages";
+import { packages } from "../../../src";
 
 describe("CallbackTest", () =>
 {

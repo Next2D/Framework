@@ -1,9 +1,9 @@
 import { ToCamelCase } from "../domain/convert/ToCamelCase";
-import { Event } from "@next2d/player/dist/player/next2d/events/Event";
+import { Event } from "@next2d/events";
 import { packages } from "./variable/Packages";
 import type { View } from "../view/View";
 import type { ViewModel } from "../view/ViewModel";
-import type { Sprite } from "@next2d/player/dist/player/next2d/display/Sprite";
+import type { Sprite } from "@next2d/display";
 
 /**
  * メインコンテキスト、ViewとViewModelのunbind、bindをコントロールします。

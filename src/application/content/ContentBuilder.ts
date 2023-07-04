@@ -1,7 +1,9 @@
 import { loaderInfoMap } from "../variable/LoaderInfoMap";
-import type { LoaderInfo } from "@next2d/player/dist/player/next2d/display/LoaderInfo";
-import type { Character } from "@next2d/player/dist/interface/Character";
-import type { DisplayObjectImpl } from "@next2d/player/dist/interface/DisplayObjectImpl";
+import type { LoaderInfo } from "@next2d/display";
+import type {
+    Character,
+    DisplayObjectImpl
+} from "@next2d/interface";
 
 /**
  * @description NoCode Toolで作成したアニメーションの動的生成の補完を行うクラス。

@@ -4,8 +4,10 @@ import { RequestType } from "../../../src/infrastructure/constant/RequestType";
 import { ResponseDTO } from "../../../src/infrastructure/dto/ResponseDTO";
 import { $setPackages } from "../../../src/application/variable/Packages";
 import { $setConfig } from "../../../src/application/variable/Config";
-import { cache } from "../../../src/application/variable/Cache";
-import { packages } from "../../../src/application/variable/Packages";
+import {
+    cache,
+    packages
+} from "../../../src";
 
 describe("RequestUseCase Test", () =>
 {

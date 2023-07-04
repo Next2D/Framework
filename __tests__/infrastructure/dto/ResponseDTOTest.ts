@@ -1,3 +1,4 @@
+import "@next2d/player";
 import { ResponseDTO } from "../../../src/infrastructure/dto/ResponseDTO";
 
 describe("ResponseDTO Test", () =>

@@ -2,7 +2,8 @@ import { RequestType } from "../../infrastructure/constant/RequestType";
 import { RequestParser } from "../../domain/parser/RequestParser";
 import { loaderInfoMap } from "../variable/LoaderInfoMap";
 import { response } from "../variable/Response";
-import type { LoaderInfo } from "@next2d/player/dist/player/next2d/display/LoaderInfo";
+import type { LoaderInfo } from "@next2d/display";
+import type { ParentImpl } from "@next2d/interface";
 
 interface Object {
     type: string;
@@ -61,9 +62,9 @@ export class RemoveResponse
              * キャッシュしないパッケージはインメモリから削除
              * Remove non-cached packages from in-memory
              */
-            const content: any = response.get(object.name);
-            const contentLoaderInfo: LoaderInfo = content._$loaderInfo;
-            if (contentLoaderInfo._$data) {
+            const content: ParentImpl<any> = response.get(object.name);
+            const contentLoaderInfo: LoaderInfo | null = content._$loaderInfo;
+            if (contentLoaderInfo && contentLoaderInfo._$data) {
                 const symbols: Map<string, any> = contentLoaderInfo._$data.symbols;
                 if (symbols.size) {
                     for (const name of symbols.keys()) {

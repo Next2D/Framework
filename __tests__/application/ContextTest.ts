@@ -1,8 +1,7 @@
 import "@next2d/player";
-import { Sprite } from "@next2d/player/dist/player/next2d/display/Sprite";
-import { packages } from "../../src/application/variable/Packages";
+import { Sprite } from "@next2d/display";
+import { packages, View } from "../../src";
 import { Context } from "../../src/application/Context";
-import { View } from "../../src/view/View";
 
 describe("ContextTest", () =>
 {

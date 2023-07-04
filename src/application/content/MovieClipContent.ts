@@ -1,4 +1,4 @@
-import { MovieClip } from "@next2d/player/dist/player/next2d/display/MovieClip";
+import { MovieClip } from "@next2d/display";
 import { ContentBuilder } from "./ContentBuilder";
 
 /**

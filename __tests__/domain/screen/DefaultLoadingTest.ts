@@ -1,4 +1,5 @@
-import { DefaultLoading } from "../../../src/domain/screen/DefaultLoading";
+import "@next2d/player";
+import { DefaultLoading } from "../../../src";
 import { $setConfig } from "../../../src/application/variable/Config";
 import { $createContext, context } from "../../../src/application/variable/Context";
 

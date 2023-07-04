@@ -5,10 +5,11 @@ module.exports = {
         "^\\@/(.+)": "<rootDir>/src/$1"
     },
     "transformIgnorePatterns": [
-        "/node_modules/(?!@next2d/player/)"
+        "/node_modules/(?!(next2d|@next2d))"
     ],
     "transform": {
-        "node_modules/@next2d/player/.+.(j|t)s?$": "ts-jest"
+        "\\.jsx?$": "babel-jest",
+        "^.+\\.(ts|tsx)$": "ts-jest"
     },
     "testEnvironment": "node"
 };
