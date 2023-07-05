@@ -16,7 +16,7 @@ import { response } from "./application/variable/Response";
 import { loaderInfoMap } from "./application/variable/LoaderInfoMap";
 
 // output build version
-console.log("%c Next2D Framework %c 1.5.10 %c https://next2d.app",
+console.log("%c Next2D Framework %c 1.6.1 %c https://next2d.app",
     "color: #fff; background: #5f5f5f",
     "color: #fff; background: #4bc729",
     "");
