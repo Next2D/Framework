@@ -11,7 +11,7 @@ Next2D Framework
 [![release](https://img.shields.io/github/v/release/Next2D/Framework)](https://github.com/Next2D/Framework/releases)
 [![Github All Releases](https://img.shields.io/npm/dt/@next2d/framework)](https://github.com/Next2D/Framework/releases)
 [![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/6c9rv5Uns5)
-![Twitter Follow](https://img.shields.io/twitter/follow/Next2D?style=social)
+[![Twitter](https://img.shields.io/twitter/follow/Next2D?style=social)](https://twitter.com/Next2D)
 
 [日本語]  
 Next2D Frameworkは、クリーンアーキテクチャー、ドメイン駆動開発、テスト駆動開発、MVVMの原則に従って設計されおり、柔軟性、拡張性、保守性に重点を置いたアーキテクチャーとデザイン手法で各レイヤーを疎結合に保つ事が可能です。  

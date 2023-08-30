@@ -1,4 +1,4 @@
-import { TextField } from "@next2d/text";
+import { TextField } from "@next2d/display";
 import { ContentBuilder } from "./ContentBuilder";
 
 /**
