@@ -1,5 +1,98 @@
-import { $currentPlayer } from "@next2d/util";
-import type { Player } from "@next2d/core";
+import { context } from "../../application/variable/Context";
+import { config } from "../../application/variable/Config";
+import { Sprite, Shape } from "@next2d/display";
+import { Tween, Job, Easing } from "@next2d/ui";
+import { Event } from "@next2d/events";
+
+/**
+ * @type {Sprite}
+ * @private
+ */
+const $sprite: Sprite = new Sprite();
+
+/**
+ * @return {object}
+ * @method
+ * @private
+ */
+const getStartObject = (): object => {
+    return {
+        "scaleX": 0.1,
+        "scaleY": 0.1,
+        "alpha": 0
+    };
+};
+
+/**
+ * @return {object}
+ * @method
+ * @private
+ */
+const getEndObject = (): object => {
+    return {
+        "scaleX": 1,
+        "scaleY": 1,
+        "alpha": 1
+    };
+};
+
+/**
+ * @description ローディングのアニメーションに必要なDisplayObjectを追加
+ *              Add DisplayObject needed for loading animation
+ *
+ * @return {void}
+ * @method
+ * @private
+ */
+const initialize = (): void =>
+{
+    for (let idx: number = 0; idx < 3; ++idx) {
+
+        const sprite: Sprite = new Sprite();
+        sprite.addChild(new Shape());
+
+        const reduceJob: Job = Tween.add(
+            sprite,
+            getEndObject(),
+            getStartObject(),
+            0.2,
+            0.7,
+            Easing.inOutCubic
+        );
+        sprite.setLocalVariable("reduceJob", reduceJob);
+
+        const expandJob: Job = Tween.add(
+            sprite,
+            getStartObject(),
+            getEndObject(),
+            0.2,
+            0.7,
+            Easing.inOutCubic
+        );
+        sprite.setLocalVariable("expandJob", expandJob);
+
+        // loop event
+        reduceJob.addEventListener(Event.COMPLETE, () =>
+        {
+            const expandJob: Job = sprite.getLocalVariable("expandJob");
+            expandJob.from = getStartObject();
+            expandJob.to   = getEndObject();
+            expandJob.start();
+        });
+
+        // loop event
+        expandJob.addEventListener(Event.COMPLETE, () =>
+        {
+            const reduceJob: Job = sprite.getLocalVariable("reduceJob");
+            reduceJob.from = getEndObject();
+            reduceJob.to   = getStartObject();
+            reduceJob.start();
+        });
+
+        $sprite.addChild(sprite);
+    }
+};
+initialize();
 
 /**
  * @class
@@ -7,21 +100,6 @@ import type { Player } from "@next2d/core";
  */
 export class DefaultLoading
 {
-    private readonly _$elementId: string;
-
-    /**
-     * @constructor
-     * @public
-     */
-    constructor ()
-    {
-        /**
-         * @type {string}
-         * @private
-         */
-        this._$elementId = "__next2d__framework_loading";
-    }
-
     /**
      * @description Canvasが設置されたDOMにローディング演出を登録、既にDOMがあれば演出を表示
      *              Register loading direction in the DOM where Canvas is installed,
@@ -33,82 +111,56 @@ export class DefaultLoading
      */
     start (): void
     {
-        const element: HTMLElement | null = document.getElementById(this._$elementId);
-        if (!element) {
+        const minSize: number = Math.ceil(Math.min(config.stage.width, config.stage.height) / 100);
+        const halfSize: number = minSize / 2;
+        for (let idx: number = 0; idx < 3; ++idx) {
 
-            const player: Player = $currentPlayer();
+            const sprite: Sprite = $sprite.getChildAt(idx);
 
-            const parent: HTMLElement | null = document
-                .getElementById(player.contentElementId);
+            /**
+             * 初期値を設定
+             * Set initial values
+             */
+            sprite.scaleX = 0.1;
+            sprite.scaleY = 0.1;
+            sprite.alpha  = 0;
 
-            if (!parent) {
-                return ;
+            const reduceJob: Job = sprite.getLocalVariable("reduceJob");
+            // reset
+            reduceJob.from = getEndObject();
+            reduceJob.to   = getStartObject();
+
+            const expandJob: Job = sprite.getLocalVariable("expandJob");
+            // reset
+            expandJob.from = getStartObject();
+            expandJob.to   = getEndObject();
+
+            if (idx) {
+                setTimeout((): void =>
+                {
+                    expandJob.start();
+                }, 200 * idx);
+            } else {
+                expandJob.start();
             }
 
-            const loader: HTMLDivElement = document.createElement("div");
+            const shape: Shape = sprite.getChildAt(0);
+            if (shape.width === minSize) {
+                continue;
+            }
 
-            loader.id = this._$elementId;
+            shape
+                .graphics
+                .clear()
+                .beginFill("#ffffff")
+                .drawCircle(0, 0, halfSize);
 
-            loader.innerHTML = `<div></div><div></div><div></div>
-<style>
-@keyframes ${this._$elementId} {
-  0% {
-    transform: scale(1);
-    opacity: 1; 
-  }
-  45% {
-    transform: scale(0.1);
-    opacity: 0.7; 
-  }
-  80% {
-    transform: scale(1);
-    opacity: 1; 
-  } 
-}
-    
-#${this._$elementId} > div:nth-child(1) {
-  animation: ${this._$elementId} 0.75s -0.24s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08); 
-}
-
-#${this._$elementId} > div:nth-child(2) {
-  animation: ${this._$elementId} 0.75s -0.12s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08); 
-}
-
-#${this._$elementId} > div:nth-child(3) {
-  animation: ${this._$elementId} 0.75s 0s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08); 
-}
-
-#${this._$elementId} {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: -10px 0 0 -30px;
-  width: 60px;
-  height: 20px;
-  z-index: 9999;
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-#${this._$elementId} > div {
-  background-color: #fff;
-  width: 15px;
-  height: 15px;
-  border-radius: 100%;
-  margin: 2px;
-  animation-fill-mode: both;
-  display: inline-block; 
-}
-</style>`;
-
-            parent.insertBefore(loader, parent.children[0]);
-
-        } else {
-
-            element.setAttribute("style", "");
-
+            sprite.x = minSize * 2 * idx;
         }
 
+        $sprite.x = (config.stage.width  - $sprite.width)  / 2;
+        $sprite.y = (config.stage.height - $sprite.height) / 2;
+        context.root.addChild($sprite);
     }
 
     /**
@@ -121,11 +173,19 @@ export class DefaultLoading
      */
     end (): void
     {
-        const element: HTMLElement | null = document
-            .getElementById(this._$elementId);
+        // stop job
+        for (let idx: number = 0; idx < 3; ++idx) {
+            const sprite: Sprite = $sprite.getChildAt(idx);
 
-        if (element) {
-            element.setAttribute("style", "display:none;");
+            const expandJob: Job = sprite.getLocalVariable("expandJob");
+            expandJob.stop();
+
+            const reduceJob: Job = sprite.getLocalVariable("reduceJob");
+            reduceJob.stop();
+        }
+
+        if ($sprite.parent === context.root) {
+            context.root.removeChild($sprite);
         }
     }
 }

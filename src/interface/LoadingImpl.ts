@@ -1,3 +1,4 @@
 export interface LoadingImpl {
-    callback: string;
+    start: Function;
+    end: Function;
 }

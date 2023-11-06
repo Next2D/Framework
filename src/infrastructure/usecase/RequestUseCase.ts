@@ -1,112 +1,44 @@
-import { RequestType } from "../constant/RequestType";
-import { ContentService } from "../service/ContentService";
-import { CustomService } from "../service/CustomService";
-import { JsonService } from "../service/JsonService";
-import { Callback } from "../../domain/callback/Callback";
-import { RequestParser } from "../../domain/parser/RequestParser";
-import { parser } from "../../application/variable/Parser";
+import { execute as contentService } from "../service/ContentService";
+import { execute as customService } from "../service/CustomService";
+import { execute as jsonService } from "../service/JsonService";
+import { execute as requestParser } from "../../domain/parser/RequestParser";
 import type { ResponseDTO } from "../dto/ResponseDTO";
-
-interface Object {
-    type: string;
-    name: string;
-    path: string;
-    cache?: boolean;
-    class: string;
-    access: string;
-    method: string;
-    callback?: string | string[];
-}
+import type { RequestImpl } from "src/interface/RequestImpl";
 
 /**
- * ページの切り替え時の外部リクエストクラス
- * External request class when switching pages
+ * @description Routing設定で指定したタイプへリクエストを実行
+ *              Execute requests to the type specified in Routing settings
  *
- * @class
- * @memberof infrastructure.usecase
+ * @param  {string} name
+ * @return {Promise}
+ * @method
+ * @public
  */
-export class RequestUseCase
+export const execute = (name: string): Promise<ResponseDTO>[] =>
 {
-    private readonly _$callback: Callback;
-    private readonly _$contentService: ContentService;
-    private readonly _$customService: CustomService;
-    private readonly _$jsonService: JsonService;
-    private readonly _$requestParser: RequestParser;
+    const promises: Promise<ResponseDTO>[] = [];
+    const requests: RequestImpl[] = requestParser(name);
+    for (let idx: number = 0; idx < requests.length; ++idx) {
 
-    /**
-     * @constructor
-     * @public
-     */
-    constructor ()
-    {
-        /**
-         * @type {Callback}
-         * @private
-         */
-        this._$callback = new Callback();
+        const requestObject: RequestImpl = requests[idx];
+        switch (requestObject.type) {
 
-        /**
-         * @type {ContentService}
-         * @private
-         */
-        this._$contentService = new ContentService();
+            case "custom":
+                promises.push(customService(requestObject));
+                break;
 
-        /**
-         * @type {CustomService}
-         * @private
-         */
-        this._$customService = new CustomService();
+            case "json":
+                promises.push(jsonService(requestObject));
+                break;
 
-        /**
-         * @type {JsonService}
-         * @private
-         */
-        this._$jsonService = new JsonService();
+            case "content":
+                promises.push(contentService(requestObject));
+                break;
 
-        /**
-         * @type {RequestParser}
-         * @private
-         */
-        this._$requestParser = new RequestParser();
-    }
-
-    /**
-     * @description Routing設定で指定したタイプへリクエストを実行
-     *              Execute requests to the type specified in Routing settings
-     *
-     * @param  {string} name
-     * @return {Promise}
-     * @method
-     * @public
-     */
-    execute (name: string): Promise<ResponseDTO>[]
-    {
-        const promises: Promise<ResponseDTO>[] = [];
-        const requests: Object[] = this._$requestParser.execute(name);
-        for (let idx: number = 0; idx < requests.length; ++idx) {
-
-            const object: Object = requests[idx];
-            switch (parser.execute(object.type)) {
-
-                case RequestType.CUSTOM:
-                    promises.push(
-                        this._$customService.execute(object)
-                    );
-                    break;
-
-                case RequestType.JSON:
-                    promises.push(
-                        this._$jsonService.execute(object)
-                    );
-                    break;
-
-                case RequestType.CONTENT:
-                    promises.push(this._$contentService.execute(object));
-                    break;
-
-            }
+            default:
+                break;
         }
-
-        return promises;
     }
-}
+
+    return promises;
+};

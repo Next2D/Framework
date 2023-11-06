@@ -5,10 +5,8 @@
 .github
 node_modules
 __tests__
-coverage
 src
 Framework_Flowchart.svg
-babel.config.js
-jest.config.js
-jest.setup.js
-webpack.config.js
+tsconfig.eslint.json
+tsconfig.json
+vite.config.ts

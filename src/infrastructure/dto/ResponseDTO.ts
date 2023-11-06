@@ -1,6 +1,6 @@
 /**
- * 外部データをObjectに変換(DTO)、可変性はない使い捨てのクラス
- * Converts external data to Object (DTO), disposable class with no variability
+ * @description 外部データをObjectに変換(DTO)、可変性のない使い捨てのクラス
+ *              Converts external data to Objects (DTO), non-variable, disposable class
  *
  * @class
  * @memberof infrastructure.dto
@@ -34,10 +34,11 @@ export class ResponseDTO
     }
 
     /**
-     * @description キャッシュする場合のキー名
-     *              Key name if caching
+     * @description キャッシュのキー名
+     *              Key name of cache
      *
      * @return {string}
+     * @default ""
      * @readonly
      * @public
      */
@@ -51,10 +52,11 @@ export class ResponseDTO
      *              response data
      *
      * @return {*}
+     * @default null
      * @readonly
      * @public
      */
-    get response (): any
+    get response (): any | null
     {
         return this._$response;
     }

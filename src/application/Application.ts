@@ -1,21 +1,29 @@
-import { QueryParser } from "../domain/parser/QueryParser";
-import { RequestUseCase } from "../infrastructure/usecase/RequestUseCase";
-import { Callback } from "../domain/callback/Callback";
-import { Loading } from "../domain/loading/Loading";
-import { Capture } from "../domain/screen/Capture";
-import { RemoveResponse } from "./service/RemoveResponse";
-import { $setPackages } from "./variable/Packages";
-import { config, $setConfig } from "./variable/Config";
-import { context, $createContext } from "./variable/Context";
-import { response } from "./variable/Response";
 import type { ResponseDTO } from "../infrastructure/dto/ResponseDTO";
 import type { View } from "../view/View";
 import type { ConfigImpl } from "../interface/ConfigImpl";
-
-interface QueryObject {
-    name: string;
-    queryString: string;
-}
+import type { QueryObjectImpl } from "../interface/QueryObjectImpl";
+import { execute as queryParser } from "../domain/parser/QueryParser";
+import { execute as requestUseCase } from "../infrastructure/usecase/RequestUseCase";
+import { execute as callback } from "../domain/callback/Callback";
+import {
+    execute as captureExecute,
+    dispose as captureDispose
+} from "../domain/screen/Capture";
+import { execute as removeResponse } from "./service/RemoveResponse";
+import { $setPackages } from "./variable/Packages";
+import { response } from "./variable/Response";
+import {
+    config,
+    $setConfig
+} from "./variable/Config";
+import {
+    context,
+    $createContext
+} from "./variable/Context";
+import {
+    start as loadingStart,
+    end as loadingEnd
+} from "../domain/loading/Loading";
 
 /**
  * シーン遷移のコントロールを行うクラス。
@@ -26,12 +34,6 @@ interface QueryObject {
  */
 export class Application
 {
-    private readonly _$queryParser: QueryParser;
-    private readonly _$requestUseCase: RequestUseCase;
-    private readonly _$callback: Callback;
-    private readonly _$loading: Loading;
-    private readonly _$capture: Capture;
-    private readonly _$removeResponse: RemoveResponse;
     private _$popstate: boolean;
     private _$currentName: string;
 
@@ -39,47 +41,8 @@ export class Application
      * @constructor
      * @public
      */
-    constructor (config: ConfigImpl, packages: any[])
+    constructor ()
     {
-        $setConfig(config);
-        $setPackages(packages);
-
-        /**
-         * @type {QueryParser}
-         * @private
-         */
-        this._$queryParser = new QueryParser();
-
-        /**
-         * @type {RequestUseCase}
-         * @private
-         */
-        this._$requestUseCase = new RequestUseCase();
-
-        /**
-         * @type {Callback}
-         * @private
-         */
-        this._$callback = new Callback();
-
-        /**
-         * @type {Loading}
-         * @private
-         */
-        this._$loading = new Loading();
-
-        /**
-         * @type {Capture}
-         * @private
-         */
-        this._$capture = new Capture();
-
-        /**
-         * @type {RemoveResponse}
-         * @private
-         */
-        this._$removeResponse = new RemoveResponse();
-
         /**
          * @type {boolean}
          * @default false
@@ -88,23 +51,39 @@ export class Application
         this._$popstate = false;
 
         /**
+         * @type {string}
+         * @default "top"
+         * @private
+         */
+        this._$currentName = "top";
+    }
+
+    /**
+     * @description 初期起動関数
+     *              initial invoking function
+     *
+     * @return {Application}
+     * @method
+     * @public
+     */
+    initialize (config: ConfigImpl, packages: any[]): Application
+    {
+        $setConfig(config);
+        $setPackages(packages);
+
+        /**
          * SPAが有効の場合は、遷移の履歴を残す
          * Keep history of transitions if SPA setting is enabled
          */
         if (config.spa) {
-            window.addEventListener("popstate", () =>
+            window.addEventListener("popstate", (): void =>
             {
                 this._$popstate = true;
                 this.gotoView();
             });
         }
 
-        /**
-         * @type {string}
-         * @default "top"
-         * @private
-         */
-        this._$currentName = "top";
+        return this;
     }
 
     /**
@@ -130,121 +109,107 @@ export class Application
      * @method
      * @public
      */
-    gotoView (name: string = ""): Promise<void>
+    async gotoView (name: string = ""): Promise<void>
     {
-        const promises: Promise<void>[] = [];
         if (config.loading) {
-            /**
-             * ローディング表示を起動
-             * Launch loading display
-             */
-            this._$loading.start();
+
+            const promises: Promise<void>[] = [];
 
             /**
              * 現時点の描画をBitmapにして処理の負担を減らす
              * Reduce the processing burden by making the current drawing a Bitmap.
              */
-            promises.push(this._$capture.execute());
+            promises.push(captureExecute());
+
+            /**
+             * ローディング表示を起動
+             * Launch loading display
+             */
+            promises.push(loadingStart());
+
+            await Promise.all(promises);
         }
 
-        return Promise
-            .all(promises)
-            .then((): Promise<void> =>
-            {
-                /**
-                 * 前の画面で取得したレスポンスデータを初期化
-                 * Initialize the response data obtained on the previous screen
-                 */
-                this
-                    ._$removeResponse
-                    .execute(this._$currentName);
+        /**
+         * 前の画面で取得したレスポンスデータを初期化
+         * Initialize the response data obtained on the previous screen
+         */
+        removeResponse(this._$currentName);
 
-                return Promise.resolve();
-            })
-            .then((): Promise<void> =>
-            {
-                /**
-                 * 指定されたパス、もしくはURLからアクセス先を算出
-                 * Calculate the access point from the specified path or URL
-                 */
-                const object: QueryObject = this._$queryParser.execute(name);
+        /**
+         * 指定されたパス、もしくはURLからアクセス先を算出
+         * Calculate the access point from the specified path or URL
+         */
+        const queryObject: QueryObjectImpl = queryParser(name);
 
-                this._$currentName = object.name;
+        /**
+         * 現在の画面名を更新
+         * Update current screen name
+         */
+        this._$currentName = queryObject.name;
 
-                /**
-                 * 遷移履歴をセット
-                 * Set transition history
-                 */
-                if (config.spa && !this._$popstate) {
-                    history.pushState("", "",
-                        `${location.origin}/${this._$currentName}${object.queryString}`
-                    );
-                }
+        /**
+         * 遷移履歴をセット
+         * Set transition history
+         */
+        if (config.spa && !this._$popstate) {
+            history.pushState("", "",
+                `${location.origin}/${this._$currentName}${queryObject.queryString}`
+            );
+        }
 
-                // update
-                this._$popstate = false;
+        // update
+        this._$popstate = false;
 
-                return Promise.resolve();
-            })
-            .then((): Promise<Awaited<ResponseDTO>[]> =>
-            {
-                /**
-                 * routing.jsonで設定したリクエスト処理を実行
-                 * Execute request processing set by routing.json
-                 */
-                return Promise
-                    .all(this._$requestUseCase.execute(this._$currentName));
-            })
-            .then((responses): Promise<void> =>
-            {
-                /**
-                 * レスポンス情報をマップに登録
-                 * Response information is registered on the map
-                 */
-                for (let idx: number = 0; idx < responses.length; ++idx) {
+        /**
+         * routing.jsonで設定したリクエスト処理を実行
+         * Execute request processing set by routing.json
+         */
+        const responses: ResponseDTO[] = await Promise.all(requestUseCase(this._$currentName));
 
-                    const object: ResponseDTO = responses[idx];
-                    if (!object.name) {
-                        continue;
-                    }
+        /**
+         * レスポンス情報をマップに登録
+         * Response information is registered on the map
+         */
+        for (let idx: number = 0; idx < responses.length; ++idx) {
 
-                    response.set(object.name, object.response);
-                }
+            const object: ResponseDTO = responses[idx];
+            if (!object.name) {
+                continue;
+            }
 
-                return Promise.resolve();
-            })
-            .then((): Promise<View | void> =>
-            {
-                /**
-                 * ViewとViewModelを起動
-                 * Start View and ViewModel
-                 */
-                return Promise.resolve(
-                    context.addChild(this._$currentName)
-                );
-            })
-            .then((view: View | void): Promise<Awaited<any>[]> =>
-            {
-                /**
-                 * コールバック設定があれば実行
-                 * Execute callback settings if any.
-                 */
-                const promises: Promise<any>[] = [];
-                if (view && config.gotoView) {
-                    promises.push(this._$callback.execute(
-                        config.gotoView.callback, view
-                    ));
-                }
+            response.set(object.name, object.response);
+        }
 
-                return Promise.all(promises);
-            })
-            .then(() =>
-            {
-                /**
-                 * ローディング表示を終了
-                 * End loading display
-                 */
-                this._$loading.end();
-            });
+        /**
+         * ViewとViewModelを起動
+         * Start View and ViewModel
+         */
+        const view: View = await context.boot(this._$currentName);
+
+        /**
+         * コールバック設定があれば実行
+         * Execute callback settings if any.
+         */
+        if (view && config.gotoView) {
+            const promises: Promise<any>[] = [];
+            promises.push(callback(
+                config.gotoView.callback, view
+            ));
+
+            await Promise.all(promises);
+        }
+
+        /**
+         * ローディング表示を終了
+         * End loading display
+         */
+        await loadingEnd();
+
+        /**
+         * 前の画面のキャプチャーを終了
+         * End previous screen capture
+         */
+        captureDispose();
     }
 }

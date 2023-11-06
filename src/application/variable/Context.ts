@@ -14,20 +14,16 @@ export let context: Context;
  * @method
  * @private
  */
-export const $createContext = (config: ConfigImpl): Promise<void> =>
+export const $createContext = async (config: ConfigImpl): Promise<void> =>
 {
-    return window
+    const root: Sprite = await window
         .next2d
         .createRootMovieClip(
             config.stage.width,
             config.stage.height,
             config.stage.fps,
             config.stage.options
-        )
-        .then((root: Sprite): Promise<void> =>
-        {
-            context = new Context(root);
+        );
 
-            return Promise.resolve();
-        });
+    context = new Context(root);
 };

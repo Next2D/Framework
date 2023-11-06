@@ -1,5 +1,5 @@
 import { Video } from "@next2d/media";
-import { ContentBuilder } from "./ContentBuilder";
+import { execute as contentBuilder } from "./ContentBuilder";
 
 /**
  * @description NoCode Toolで作成したVideoの動的生成の補完を行うクラス。
@@ -19,7 +19,7 @@ export class VideoContent extends Video
     {
         super();
 
-        ContentBuilder.execute(this);
+        contentBuilder(this);
 
         // initial processing
         this.initialize();

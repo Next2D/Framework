@@ -9,4 +9,6 @@ export interface RequestImpl {
     class?: string;
     access?: string;
     method?: string;
+    headers?: HeadersInit;
+    body?: object;
 }

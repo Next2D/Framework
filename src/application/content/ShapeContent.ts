@@ -1,5 +1,5 @@
 import { Shape } from "@next2d/display";
-import { ContentBuilder } from "./ContentBuilder";
+import { execute as contentBuilder } from "./ContentBuilder";
 
 /**
  * @description NoCode Toolで作成したShapeの動的生成の補完を行うクラス。
@@ -19,7 +19,7 @@ export class ShapeContent extends Shape
     {
         super();
 
-        ContentBuilder.execute(this);
+        contentBuilder(this);
 
         // initial processing
         this.initialize();

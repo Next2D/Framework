@@ -1,4 +1,5 @@
-import { parser } from "../../application/variable/Parser";
+import type { RequestImpl } from "src/interface/RequestImpl";
+import { Loader } from "@next2d/display";
 import {
     Event,
     IOErrorEvent
@@ -7,89 +8,71 @@ import {
     URLRequestHeader,
     URLRequest
 } from "@next2d/net";
-import { Loader } from "@next2d/display";
-
-interface Object {
-    type: string;
-    name: string;
-    path: string;
-    cache?: boolean;
-    callback?: string|string[];
-    method?: string;
-    body?: object;
-    headers?: HeadersInit;
-}
 
 /**
- * NoCodeToolで制作したJSON取得時のリクエストとレスポンスの管理クラス
- * Request and Response management class for JSON acquisition
+ * @description 指定先のJSONを非同期で取得
+ *              Asynchronously obtain JSON of the specified destination
  *
- * @class
- * @memberof infrastructure.repository
+ * @param  {object} request_object
+ * @return {Promise<any>}
+ * @method
+ * @public
  */
-export class ContentRepository
+export const execute = (request_object: RequestImpl): Promise<any> =>
 {
-    /**
-     * @description 指定先のJSONを非同期で取得
-     *              Asynchronously obtain JSON of the specified destination
-     *
-     * @param  {object} object
-     * @return {Promise<any>}
-     * @method
-     * @public
-     */
-    execute (object: Object): Promise<any>
+    return new Promise((resolve, reject) =>
     {
-        return new Promise((resolve, reject) =>
-        {
-            const request: URLRequest = new URLRequest(`${parser.execute(object.path)}`);
+        if (!request_object.path) {
+            return reject();
+        }
 
-            const method = object.method
-                ? parser.execute(object.method).toUpperCase()
-                : "GET";
+        const request: URLRequest = new URLRequest(request_object.path);
 
-            switch (method) {
+        const method: string = request_object.method
+            ? request_object.method.toUpperCase()
+            : "GET";
 
-                case "DELETE":
-                case "GET":
-                case "HEAD":
-                case "OPTIONS":
-                case "POST":
-                case "PUT":
-                    request.method = method;
-                    break;
+        switch (method) {
 
-                default:
-                    request.method = "GET";
-                    break;
+            case "DELETE":
+            case "GET":
+            case "HEAD":
+            case "OPTIONS":
+            case "POST":
+            case "PUT":
+                request.method = method;
+                break;
 
+            default:
+                request.method = "GET";
+                break;
+
+        }
+
+        if (request_object.headers) {
+            for (const [name, value] of Object.entries(request_object.headers)) {
+                request
+                    .requestHeaders
+                    .push(new URLRequestHeader(name, value));
             }
+        }
 
-            if (object.headers) {
-                for (const [name, value] of Object.entries(object.headers)) {
-                    request
-                        .requestHeaders
-                        .push(new URLRequestHeader(name, value));
-                }
-            }
+        if (request_object.body) {
+            request.data = JSON.stringify(request_object.body);
+        }
 
-            if (object.body) {
-                request.data = JSON.stringify(object.body);
-            }
+        const loader: Loader = new Loader();
+        loader
+            .contentLoaderInfo
+            .addEventListener(Event.COMPLETE, (event: Event) =>
+            {
+                return resolve(event.currentTarget.content);
+            });
 
-            const loader: Loader = new Loader();
-            loader
-                .contentLoaderInfo
-                .addEventListener(Event.COMPLETE, (event: any) =>
-                {
-                    return resolve(event.currentTarget.content);
-                });
+        loader
+            .contentLoaderInfo
+            .addEventListener(IOErrorEvent.IO_ERROR, reject);
 
-            loader
-                .contentLoaderInfo
-                .addEventListener(IOErrorEvent.IO_ERROR, reject);
-
-            loader.load(request);
-        });
-    }
-}
+        loader.load(request);
+    });
+};

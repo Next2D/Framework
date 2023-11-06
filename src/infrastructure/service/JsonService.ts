@@ -1,114 +1,62 @@
-import { JsonRepository } from "../repository/JsonRepository";
-import { Callback } from "../../domain/callback/Callback";
+import { execute as jsonRepository } from "../repository/JsonRepository";
+import { execute as callback } from "../../domain/callback/Callback";
 import { ResponseDTO } from "../dto/ResponseDTO";
-import { parser } from "../../application/variable/Parser";
 import { cache } from "../../application/variable/Cache";
-
-interface Object {
-    type: string;
-    name: string;
-    path: string;
-    cache?: boolean;
-    callback?: string | string[];
-    method?: string;
-    body?: object;
-    headers?: HeadersInit;
-}
+import { RequestImpl } from "src/interface/RequestImpl";
 
 /**
- * JSON取得時のロジッククラス
- * Logic class for JSON acquisition
+ * @description RepositoryからJSONを取得して、configのcallbackがあれば実行
+ *              キャッシュ設定がOnの時はJSONをキャッシュにセット
+ *              Get JSON from Repository and run config callback if any.
+ *              If cache setting is On, set JSON to cache.
  *
- * @class
- * @memberof infrastructure.service
+ * @param  {object} request_object
+ * @return {Promise<ResponseDTO>}
+ * @method
+ * @public
  */
-export class JsonService
+export const execute = async (request_object: RequestImpl): Promise<ResponseDTO> =>
 {
-    private readonly _$repository: JsonRepository;
-    private readonly _$callback: Callback;
-
-    /**
-     * @constructor
-     * @public
-     */
-    constructor ()
-    {
-        /**
-         * @type {JsonRepository}
-         * @private
-         */
-        this._$repository = new JsonRepository();
-
-        /**
-         * @type {Callback}
-         * @private
-         */
-        this._$callback = new Callback();
+    if (!request_object.name) {
+        throw new Error("`name` must be set for json requests.");
     }
 
     /**
-     * @description RepositoryからJSONを取得して、configのcallbackがあれば実行
-     *              キャッシュ設定がOnの時はJSONをキャッシュにセット
-     *              Get JSON from Repository and run config callback if any.
-     *              If cache setting is On, set JSON to cache.
-     *
-     * @param  {object} object
-     * @return {Promise<ResponseDTO>}
-     * @method
-     * @public
+     * キャッシュを利用する場合はキャッシュデータをチェック
+     * Check cache data if cache is used
      */
-    execute (object: Object): Promise<ResponseDTO>
-    {
-        /**
-         * キャッシュを利用する場合はキャッシュデータをチェック
-         * Check cache data if cache is used
-         */
-        if (object.cache && object.name) {
+    if (request_object.cache) {
+        if (cache.size && cache.has(request_object.name)) {
 
-            const name: string = parser.execute(object.name);
-            if (cache.size && cache.has(name)) {
+            const value: any = cache.get(request_object.name);
 
-                const value: any = cache.get(name);
-
+            if (request_object.callback) {
                 const promises: Promise<Awaited<any>[]|void>[] = [];
-                if (object.callback) {
-                    promises.push(this._$callback.execute(
-                        object.callback, value
-                    ));
-                }
+                promises.push(callback(
+                    request_object.callback, value
+                ));
 
-                return Promise
-                    .all(promises)
-                    .then((): ResponseDTO =>
-                    {
-                        return new ResponseDTO(name, value);
-                    });
+                await Promise.all(promises);
             }
+
+            return new ResponseDTO(request_object.name, value);
         }
-
-        return this
-            ._$repository
-            .execute(object)
-            .then((response: JSON) =>
-            {
-                const name: string = parser.execute(object.name);
-                if (object.cache && object.name) {
-                    cache.set(name, response);
-                }
-
-                const promises: Promise<Awaited<any>[]|void>[] = [];
-                if (object.callback) {
-                    promises.push(this._$callback.execute(
-                        object.callback, response
-                    ));
-                }
-
-                return Promise
-                    .all(promises)
-                    .then((): ResponseDTO =>
-                    {
-                        return new ResponseDTO(name, response);
-                    });
-            });
     }
-}
+
+    const response: any = await jsonRepository(request_object);
+
+    if (request_object.cache) {
+        cache.set(request_object.name, response);
+    }
+
+    if (request_object.callback) {
+        const promises: Promise<Awaited<any>[]|void>[] = [];
+        promises.push(callback(
+            request_object.callback, response
+        ));
+
+        await Promise.all(promises);
+    }
+
+    return new ResponseDTO(request_object.name, response);
+};

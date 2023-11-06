@@ -12,39 +12,30 @@ import type {
  * @class
  * @memberof application.content
  */
-export class ContentBuilder
+export const execute = (instance: DisplayObjectImpl<any>): void =>
 {
-    /**
-     * @param  {object} instance
-     * @return {object}
-     * @method
-     * @static
-     */
-    static execute (instance: DisplayObjectImpl<any>): void
-    {
-        const name = instance.namespace;
-        if (!loaderInfoMap.has(name)) {
-            return ;
-        }
-
-        // Set the target LoaderInfo class
-        const loaderInfo: LoaderInfo | void = loaderInfoMap.get(name);
-        if (!loaderInfo || !loaderInfo._$data) {
-            return ;
-        }
-
-        const characterId: number | void  = loaderInfo._$data.symbols.get(name);
-        if (!characterId) {
-            return ;
-        }
-
-        const character: Character<any> = loaderInfo._$data.characters[characterId];
-        if (!character) {
-            return ;
-        }
-
-        instance._$loaderInfo  = loaderInfo;
-        instance._$characterId = characterId;
-        instance._$sync(character);
+    const name = instance.namespace;
+    if (!loaderInfoMap.has(name)) {
+        return ;
     }
-}
+
+    // Set the target LoaderInfo class
+    const loaderInfo: LoaderInfo | void = loaderInfoMap.get(name);
+    if (!loaderInfo || !loaderInfo._$data) {
+        return ;
+    }
+
+    const characterId: number | void  = loaderInfo._$data.symbols.get(name);
+    if (!characterId) {
+        return ;
+    }
+
+    const character: Character<any> = loaderInfo._$data.characters[characterId];
+    if (!character) {
+        return ;
+    }
+
+    instance._$loaderInfo  = loaderInfo;
+    instance._$characterId = characterId;
+    instance._$sync(character);
+};

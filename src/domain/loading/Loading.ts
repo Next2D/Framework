@@ -1,67 +1,91 @@
+import type { LoadingImpl } from "src/interface/LoadingImpl";
 import { config } from "../../application/variable/Config";
 import { packages } from "../../application/variable/Packages";
-import { parser } from "../../application/variable/Parser";
 import { DefaultLoading } from "../screen/DefaultLoading";
 
 /**
- * @class
- * @memberof domain.loading
+ * @type {object}
+ * @default null
+ * @private
  */
-export class Loading
+let $instance: LoadingImpl | null = null;
+
+/**
+ * @description ページ遷移時のローディング演出を開始
+ *              Starts loading performance at page transitions
+ *
+ * @return {Promise}
+ * @method
+ * @public
+ */
+export const start = (): Promise<void> =>
 {
-    /**
-     * @description デフォルトのローディング演出を開始
-     *              Starts default loading direction
-     *
-     * @return {void}
-     * @method
-     * @public
-     */
-    start (): void
+    return new Promise((resolve): void =>
     {
         if (!config || !config.loading) {
-            return ;
+            return resolve();
         }
 
-        const callback: string | void = config.loading.callback;
-        if (!callback) {
-            return ;
+        const name: string | void = config.loading.callback;
+        if (!name) {
+            return resolve();
         }
 
-        const name: string = parser.execute(callback);
+        if (!$instance) {
+            const CallbackClass: any = packages.has(name)
+                ? packages.get(name)
+                : DefaultLoading;
 
-        const CallbackClass: any = packages.has(name)
-            ? packages.get(name)
-            : DefaultLoading;
+            $instance = new CallbackClass();
+        }
 
-        new CallbackClass().start();
-    }
+        if (!$instance) {
+            return resolve();
+        }
 
-    /**
-     * @description デフォルトのローディング演出を終了
-     *              End default loading direction
-     *
-     * @return {void}
-     * @method
-     * @public
-     */
-    end (): void
+        $instance.start();
+
+        setTimeout(() =>
+        {
+            resolve();
+        }, 500);
+    });
+};
+
+/**
+ * @description ページ遷移時のローディング演出を終了
+ *              Terminate loading direction at page transition
+ *
+ * @return {Promise}
+ * @method
+ * @public
+ */
+export const end = (): Promise<void> =>
+{
+    return new Promise((resolve): void =>
     {
         if (!config || !config.loading) {
-            return ;
+            return resolve();
         }
 
-        const callback: string|undefined = config.loading.callback;
-        if (!callback) {
-            return ;
+        const name: string | undefined = config.loading.callback;
+        if (!name) {
+            return resolve();
         }
 
-        const name: string = parser.execute(callback);
+        if (!$instance) {
 
-        const CallbackClass: any = packages.has(name)
-            ? packages.get(name)
-            : DefaultLoading;
+            const CallbackClass: any = packages.has(name)
+                ? packages.get(name)
+                : DefaultLoading;
 
-        new CallbackClass().end();
-    }
-}
+            $instance = new CallbackClass();
+        }
+
+        if (!$instance) {
+            return resolve();
+        }
+
+        resolve($instance.end());
+    });
+};

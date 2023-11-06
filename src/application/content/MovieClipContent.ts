@@ -1,5 +1,5 @@
 import { MovieClip } from "@next2d/display";
-import { ContentBuilder } from "./ContentBuilder";
+import { execute as contentBuilder } from "./ContentBuilder";
 
 /**
  * @description NoCode Toolで作成したMovieClipの動的生成の補完を行うクラス。
@@ -19,7 +19,7 @@ export class MovieClipContent extends MovieClip
     {
         super();
 
-        ContentBuilder.execute(this);
+        contentBuilder(this);
 
         // initial processing
         this.initialize();

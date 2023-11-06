@@ -1,5 +1,5 @@
 import { TextField } from "@next2d/display";
-import { ContentBuilder } from "./ContentBuilder";
+import { execute as contentBuilder } from "./ContentBuilder";
 
 /**
  * @description NoCode Toolで作成したTextFieldの動的生成の補完を行うクラス。
@@ -19,7 +19,7 @@ export class TextFieldContent extends TextField
     {
         super();
 
-        ContentBuilder.execute(this);
+        contentBuilder(this);
 
         // initial processing
         this.initialize();

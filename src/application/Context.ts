@@ -1,14 +1,15 @@
-import { ToCamelCase } from "../domain/convert/ToCamelCase";
+import { execute as toCamelCase } from "../domain/convert/ToCamelCase";
 import { packages } from "./variable/Packages";
 import type { View } from "../view/View";
 import type { ViewModel } from "../view/ViewModel";
 import type { Sprite } from "@next2d/display";
 
 /**
- * メインコンテキスト、ViewとViewModelのunbind、bindをコントロールします。
- * Controls unbind and bind of the main context, View and ViewModel.
+ * @description メインコンテキスト、ViewとViewModelのunbind、bindをコントロールします。
+ *              Controls unbind and bind of the main context, View and ViewModel.
+ *
  * @class
- * @memberof application
+ * @memberof context
  */
 export class Context
 {
@@ -16,7 +17,6 @@ export class Context
     private _$viewModel: ViewModel | null;
     private _$viewName: string;
     private readonly _$root: Sprite;
-    private readonly _$toCamelCase: ToCamelCase;
 
     /**
      * @param {Sprite} root
@@ -49,16 +49,9 @@ export class Context
 
         /**
          * @type {Sprite}
-         * @default null
          * @private
          */
         this._$root = root;
-
-        /**
-         * @type {ToCamelCase}
-         * @private
-         */
-        this._$toCamelCase = new ToCamelCase();
     }
 
     /**
@@ -125,55 +118,57 @@ export class Context
      * @method
      * @public
      */
-    addChild (name: string): Promise<View | void>
+    async boot (name: string): Promise<View>
     {
-        this._$viewName = this._$toCamelCase.execute(name);
+        this._$viewName = toCamelCase(name);
 
-        const viewName: string      = `${this._$viewName}View`;
+        const viewName: string = `${this._$viewName}View`;
         const viewModelName: string = `${viewName}Model`;
 
         if (!packages.size
             || !packages.has(viewName)
             || !packages.has(viewModelName)
         ) {
-            return Promise.resolve();
+            throw new Error("not found view or viewMode.");
         }
 
-        const PrevView: View | null = this._$view;
-        const PrevViewModel: ViewModel | null = this._$viewModel;
+        /**
+         * 現在のページをstageから削除して、unbind関数を実行
+         * Delete current page from stage and execute unbind function
+         */
+        if (this._$view) {
+            if (this._$viewModel) {
+                this._$viewModel.unbind(this._$view);
+            }
 
+            // remove
+            if (this._$view.parent === this._$root) {
+                this._$root.removeChild(this._$view);
+            }
+        }
+
+        /**
+         * 遷移先のViewとViewModelを準備
+         * Prepare the destination View and ViewModel
+         */
         const ViewModelClass: typeof ViewModel = packages.get(viewModelName);
         this._$viewModel = new ViewModelClass();
 
         const ViewClass: typeof View = packages.get(viewName);
         this._$view = new ViewClass();
 
-        return Promise
-            .all([this._$viewModel.bind(this._$view)])
-            .then(() =>
-            {
-                if (!this._$view) {
-                    return ;
-                }
+        /**
+         * ViewModelにViewをbindしてページを生成
+         * Bind a View to a ViewModel to generate a page
+         */
+        await Promise.all([this._$viewModel.bind(this._$view)]);
 
-                const root: Sprite | null = this._$root;
-                if (!root) {
-                    throw new Error("the root is null.");
-                }
+        /**
+         * stageの一番背面にviewをセット
+         * Set the view at the very back of the stage
+         */
+        this._$root.addChildAt(this._$view, 0);
 
-                root.addChild(this._$view);
-
-                while (root.numChildren > 1) {
-                    root.removeChild(root.getChildAt(0));
-                }
-
-                root.mouseChildren = true;
-
-                if (PrevViewModel && PrevView) {
-                    PrevViewModel.unbind(PrevView);
-                }
-
-                return this._$view;
-            });
+        return this._$view;
     }
 }

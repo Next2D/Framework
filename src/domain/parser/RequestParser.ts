@@ -1,62 +1,51 @@
-import { RequestType } from "../../infrastructure/constant/RequestType";
+import { RequestImpl } from "src/interface/RequestImpl";
 import { config } from "../../application/variable/Config";
-import type { RequestTypeImpl } from "../../interface/RequestTypeImpl";
-
-interface Object {
-    type: RequestTypeImpl;
-    name: string;
-    path: string;
-    cache: boolean;
-    class: string;
-    access: string;
-    method: string;
-    callback?: string | string[];
-}
+import type { RoutingImpl } from "src/interface/RoutingImpl";
 
 /**
- * @class
- * @memberof domain.parser
+ * @description routing.jsonに設定されたrequestsを返却します。
+ *              クラスターの指定があった場合は返却する配列にマージして返却
+ *              Returns requests set in routing.json.
+ *              If a cluster is specified, it is merged into the array to be returned
+ *
+ * @param  {string} name
+ * @return {array}
+ * @method
+ * @public
  */
-export class RequestParser
+export const execute = (name: string): RequestImpl[] =>
 {
-    /**
-     * @description routing.jsonに設定されたrequestsを返却します。
-     *              クラスターの指定があった場合は返却する配列にマージして返却
-     *              Returns requests set in routing.json.
-     *              If a cluster is specified, it is merged into the array to be returned
-     *
-     * @param  {string} name
-     * @return {array}
-     * @method
-     * @public
-     */
-    execute (name: string): Object[]
-    {
-        if (!config || !config.routing) {
-            return [];
-        }
+    const requests: RequestImpl[] = [];
 
-        const routing: any = config.routing[name];
-        if (!routing || !routing.requests) {
-            return [];
-        }
-
-        const requests: Object[] = [];
-        for (let idx = 0; idx < routing.requests.length; idx++) {
-
-            const object: Object = routing.requests[idx];
-
-            if (object.type !== RequestType.CLUSTER) {
-                requests.push(object);
-                continue;
-            }
-
-            const results: Object[] = new RequestParser().execute(object.path);
-            for (let idx = 0; idx < results.length; ++idx) {
-                requests.push(results[idx]);
-            }
-        }
-
+    if (!config || !config.routing) {
         return requests;
     }
-}
+
+    const routing: RoutingImpl = config.routing[name];
+    if (!routing || !routing.requests) {
+        return requests;
+    }
+
+    for (let idx: number = 0; idx < routing.requests.length; idx++) {
+
+        const request: RequestImpl = routing.requests[idx];
+
+        if (request.type !== "cluster") {
+            requests.push(request);
+            continue;
+        }
+
+        if (!request.path) {
+            continue;
+        }
+
+        /**
+         * クラスターの場合は分解して配列に追加
+         * For clusters, disassemble and add to array
+         */
+        const results: RequestImpl[] = execute(request.path);
+        requests.push(...results);
+    }
+
+    return requests;
+};

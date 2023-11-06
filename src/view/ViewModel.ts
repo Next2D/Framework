@@ -32,6 +32,7 @@ export class ViewModel
      * @method
      * @public
      */
+    // @ts-ignore
     // eslint-disable-next-line no-unused-vars,no-empty-function
     unbind (view: View): void {}
 
@@ -48,7 +49,8 @@ export class ViewModel
     {
         return new Promise((resolve) =>
         {
-            requestAnimationFrame((): void => {
+            requestAnimationFrame((): void =>
+            {
                 return resolve(view);
             });
         });

@@ -13,12 +13,12 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ "main", "develop" ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ main, develop ]
+    branches: [ "main", "develop" ]
   schedule:
-    - cron: '38 23 * * 1'
+    - cron: '44 22 * * 5'
 
 jobs:
   analyze:
@@ -32,10 +32,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript' ]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
-        # Learn more:
-        # https://docs.github.com/en/free-pro-team@latest/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#changing-the-languages-that-are-analyzed
+        language: [ 'javascript-typescript' ]
+        # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
+        # Use only 'java-kotlin' to analyze code written in Java, Kotlin or both
+        # Use only 'javascript-typescript' to analyze code written in JavaScript, TypeScript or both
+        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
     steps:
     - name: Checkout repository
