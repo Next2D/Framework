@@ -55,8 +55,8 @@ const initialize = (): void =>
             sprite,
             getEndObject(),
             getStartObject(),
-            0.2,
-            0.7,
+            0.12,
+            0.5,
             Easing.inOutCubic
         );
         sprite.setLocalVariable("reduceJob", reduceJob);
@@ -65,8 +65,8 @@ const initialize = (): void =>
             sprite,
             getStartObject(),
             getEndObject(),
-            0.2,
-            0.7,
+            0.12,
+            0.5,
             Easing.inOutCubic
         );
         sprite.setLocalVariable("expandJob", expandJob);
@@ -139,7 +139,7 @@ export class DefaultLoading
                 setTimeout((): void =>
                 {
                     expandJob.start();
-                }, 200 * idx);
+                }, 120 * idx);
             } else {
                 expandJob.start();
             }

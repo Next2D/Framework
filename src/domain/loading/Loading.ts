@@ -43,12 +43,7 @@ export const start = (): Promise<void> =>
             return resolve();
         }
 
-        $instance.start();
-
-        setTimeout(() =>
-        {
-            resolve();
-        }, 500);
+        resolve($instance.start());
     });
 };
 
