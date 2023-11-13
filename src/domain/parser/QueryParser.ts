@@ -36,6 +36,7 @@ export const execute = (name: string = ""): QueryObjectImpl =>
         }
     }
 
+    const defaultTop: string = config?.defaultTop || "top";
     if (!name) {
         const names: string[] = location.pathname.split("/");
         names.shift();
@@ -43,16 +44,16 @@ export const execute = (name: string = ""): QueryObjectImpl =>
         if (name && config && config.routing) {
             const routing: RoutingImpl = config.routing[name];
             if (!routing) {
-                name = "top";
+                name = defaultTop;
             }
 
             if (routing && routing.private) {
-                name = routing.redirect || "top";
+                name = routing.redirect || defaultTop;
             }
         }
 
         if (!name) {
-            name = "top";
+            name = defaultTop;
         }
     }
 
@@ -75,7 +76,7 @@ export const execute = (name: string = ""): QueryObjectImpl =>
     }
 
     if (name.slice(0, 1) === ".") {
-        name = name.split("/").slice(1).join("/") || "top";
+        name = name.split("/").slice(1).join("/") || defaultTop;
     }
 
     if (name.indexOf("@") > -1) {

@@ -12,6 +12,7 @@ export interface ConfigImpl extends BaseConfigImpl {
     routing?: {
         [key: string]: RoutingImpl
     };
+    defaultTop?: string;
     spa: boolean;
     loading?: {
         callback: string;
