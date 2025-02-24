@@ -1,29 +1,33 @@
-import { Context } from "../Context";
-import type { Sprite } from "@next2d/display";
-import type { ConfigImpl } from "../../interface/ConfigImpl";
+import type { Context } from "../Context";
 
 /**
  * @type {Context}
  * @public
  */
-export let context: Context;
+let $context: Context;
 
 /**
- * @param  {object} config
- * @return {void}
+ * @description コンテキストを取得します
+ *              Get the context
+ *
+ * @return {Context}
  * @method
- * @private
+ * @protected
  */
-export const $createContext = async (config: ConfigImpl): Promise<void> =>
+export const $getContext = (): Context =>
 {
-    const root: Sprite = await window
-        .next2d
-        .createRootMovieClip(
-            config.stage.width,
-            config.stage.height,
-            config.stage.fps,
-            config.stage.options
-        );
+    return $context as NonNullable<Context>;
+};
 
-    context = new Context(root);
+/**
+ * @description コンテキストを設定します
+ *              Set the context
+ *
+ * @param {Context} context
+ * @method
+ * @protected
+ */
+export const $setContext = (context: Context): void =>
+{
+    $context = context;
 };

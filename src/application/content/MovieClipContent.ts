@@ -1,12 +1,11 @@
 import { MovieClip } from "@next2d/display";
-import { execute as contentBuilder } from "./ContentBuilder";
+import { execute as contentBuilderService } from "./Builder/service/ContentBuilderService";
 
 /**
- * @description NoCode Toolで作成したMovieClipの動的生成の補完を行うクラス。
- *              A class that complements the dynamic generation of MovieClip created by the NoCode Tool.
+ * @description Animation Toolで作成したMovieClipの動的生成の補完を行うクラス。
+ *              A class that complements the dynamic generation of MovieClip created by the Animation Tool.
  *
  * @class
- * @memberof application.content
  * @extends {MovieClip}
  */
 export class MovieClipContent extends MovieClip
@@ -19,7 +18,7 @@ export class MovieClipContent extends MovieClip
     {
         super();
 
-        contentBuilder(this);
+        contentBuilderService(this);
 
         // initial processing
         this.initialize();

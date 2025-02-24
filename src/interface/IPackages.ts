@@ -1,0 +1,1 @@
+export type IPackages = Array<Array<string | Function>>

@@ -5,7 +5,6 @@
 import * as fs from "fs";
 
 /**
- * @param  {string} dir
  * @return {void}
  * @method
  * @private

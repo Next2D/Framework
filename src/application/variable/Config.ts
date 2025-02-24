@@ -1,18 +1,34 @@
-import { ConfigImpl } from "../../interface/ConfigImpl";
+import type { IConfig } from "../../interface/IConfig";
 
 /**
- * @type {object}
- * @public
- */
-export let config: ConfigImpl;
-
-/**
- * @param  {object} object
- * @return {void}
- * @method
+ * @type {IConfig}
  * @private
  */
-export const $setConfig = (object: ConfigImpl): void =>
+let $config: IConfig;
+
+/**
+ * @description 環境設定として書き出ししたobjectをセットします
+ *              Set the object written as environment settings
+ *
+ * @param  {IConfig} object
+ * @return {void}
+ * @method
+ * @protected
+ */
+export const $setConfig = (object: IConfig): void =>
 {
-    config = object;
+    $config = object;
+};
+
+/**
+ * @description 環境設定としてセットされたobjectを返却します
+ *              Returns the object set as environment settings
+ *
+ * @return {IConfig}
+ * @method
+ * @protected
+ */
+export const $getConfig = (): IConfig =>
+{
+    return $config;
 };

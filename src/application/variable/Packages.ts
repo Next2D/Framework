@@ -1,16 +1,16 @@
 /**
  * @type {Map}
- * @public
+ * @protected
  */
-export let packages: Map<string, any> = new Map();
+export let packages: Map<string, Function> = new Map();
 
 /**
- * @param  {array} package_list
+ * @param  {Array<Array<string | Function>>} package_list
  * @return {void}
  * @method
- * @private
+ * @protected
  */
-export const $setPackages = (package_list: any[]): void =>
+export const $setPackages = (package_list: any): void =>
 {
     packages = new Map(package_list);
 };

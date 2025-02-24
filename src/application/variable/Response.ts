@@ -1,1 +1,0 @@
-export const response: Map<string, any> = new Map();

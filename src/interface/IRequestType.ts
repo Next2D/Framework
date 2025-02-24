@@ -1,0 +1,1 @@
+export type IRequestType = "json" | "content" | "custom" | "cluster";

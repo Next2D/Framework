@@ -1,38 +1,64 @@
 {
   "name": "@next2d/framework",
   "description": "Next2D Framework is designed according to the principles of clean architecture, domain-driven development, test-driven development, and MVVM, with an emphasis on flexibility, scalability, and maintainability, and a design methodology that keeps each layer loosely coupled.",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "homepage": "https://next2d.app",
   "bugs": "https://github.com/Next2D/Framework/issues/new",
   "author": "Toshiyuki Ienaga <ienaga@next2d.app> (https://github.com/ienaga/)",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "require": "./src/index.js"
+    }
+  },
   "keywords": [
     "Next2D",
     "Next2D Framework"
   ],
   "scripts": {
     "lint": "eslint src/**/*.ts",
-    "publish": "node ./scripts/version.js && tsc",
-    "test": "npx vitest"
+    "publish": "node ./scripts/clean.js && node ./scripts/version.js && tsc && node ./scripts/publish.js",
+    "test": "vitest"
   },
-  "files": [
-    "dist"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Next2D/Framework.git"
   },
   "devDependencies": {
-    "@next2d/player": "*",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^6.10.0",
-    "eslint": "^8.53.0",
-    "jsdom": "^22.1.0",
-    "typescript": "^5.2.2",
-    "vite": "^4.5.0",
-    "vitest": "^0.34.6"
+    "@eslint/eslintrc": "^3.3.0",
+    "@eslint/js": "^9.21.0",
+    "@types/node": "^22.13.5",
+    "@typescript-eslint/eslint-plugin": "^8.24.1",
+    "@typescript-eslint/parser": "^8.24.1",
+    "@vitest/web-worker": "^3.0.6",
+    "eslint": "^9.21.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "globals": "^16.0.0",
+    "jsdom": "^26.0.0",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.1",
+    "vitest": "^3.0.6",
+    "vitest-webgl-canvas-mock": "^1.1.0"
+  },
+  "peerDependencies": {
+    "@next2d/cache": "file:../player/packages/cache",
+    "@next2d/core": "file:../player/packages/core",
+    "@next2d/display": "file:../player/packages/display",
+    "@next2d/events": "file:../player/packages/events",
+    "@next2d/filters": "file:../player/packages/filters",
+    "@next2d/geom": "file:../player/packages/geom",
+    "@next2d/media": "file:../player/packages/media",
+    "@next2d/net": "file:../player/packages/net",
+    "@next2d/player": "file:../player",
+    "@next2d/render-queue": "file:../player/packages/render-queue",
+    "@next2d/renderer": "file:../player/packages/renderer",
+    "@next2d/text": "file:../player/packages/text",
+    "@next2d/texture-packer": "file:../player/packages/texture-packer",
+    "@next2d/ui": "file:../player/packages/ui",
+    "@next2d/webgl": "file:../player/packages/webgl"
   }
 }
